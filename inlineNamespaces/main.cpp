@@ -1,7 +1,25 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-#include <cppExperiments/inlineNamespaces/api.h>
+namespace library
+{
+namespace v1
+{
+int GetVersion()
+{
+    return 1;
+};
+
+} // namespace v1
+inline namespace v2
+{
+int GetVersion()
+{
+    return 2;
+};
+
+} // namespace v2
+} // namespace library
 
 TEST_CASE( "InlineNamespaces" )
 {

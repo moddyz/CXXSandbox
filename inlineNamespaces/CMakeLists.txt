@@ -1,15 +1,4 @@
-file(GLOB CPP_FILES *.cpp)
-file(GLOB HEADER_FILES *.h)
-
-cpp_library(
-    cppExperiments
-    inlineNamespaces
+cpp_test_program(inlineNamespaces
     CPPFILES
-        ${CPP_FILES}
-    PUBLIC_HEADERS
-        ${HEADER_FILES}
+        main.cpp
 )
-
-if(BUILD_TESTING)
-    add_subdirectory(tests)
-endif()
