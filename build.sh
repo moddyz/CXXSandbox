@@ -6,6 +6,7 @@ mkdir -p build && cd build
 
 CMAKE_ARGS=\
 \ -DCMAKE_BUILD_TYPE="Debug"\
+\ -DCMAKE_CTEST_ARGUMENTS="--output-on-failure"\
 \ -DBUILD_TESTING="TRUE"
 
 # Only build if installation path not specified.
