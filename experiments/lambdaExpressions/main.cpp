@@ -10,6 +10,9 @@ TEST_CASE( "LambdaExpressions" )
 
     x++;
 
+    // GetX captured x by value was captured before it was incrememented.
     CHECK( GetX() == 1 );
+
+    // GetX captured x by reference, so it assumes the most up-to-date value of x.
     CHECK( GetXRef() == 2 );
 }
