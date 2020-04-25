@@ -29,5 +29,5 @@ if(BUILD_TESTING)
 endif()
 
 # Build targets.
-add_subdirectory(extern)
+add_subdirectory(thirdparty)
 add_subdirectory(inlineNamespaces)
