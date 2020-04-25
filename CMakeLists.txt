@@ -30,4 +30,4 @@ endif()
 
 # Build targets.
 add_subdirectory(thirdparty)
-add_subdirectory(inlineNamespaces)
+add_subdirectory(experiments)
