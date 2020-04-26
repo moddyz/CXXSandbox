@@ -6,8 +6,7 @@ include(
     Private
 )
 
-# List all the sub-directories, under PARENT_DIRECTORY, and store
-# into SUBDIRS.
+# List all the sub-directories, under PARENT_DIRECTORY, and store into SUBDIRS.
 macro(
     list_subdirectories
     SUBDIRS
@@ -47,8 +46,7 @@ endmacro()
 
 # Builds a new shared library.
 function(
-    cpp_library
-    PACKAGE_PREFIX
+    cpp_shared_library
     LIBRARY_NAME
 )
     set(options)
@@ -68,15 +66,8 @@ function(
         ${ARGN}
     )
 
-    # Each library has a prefix which serves as the top-level organizing
-    # structure.  This could be the project, or organization name.
-    set(PREFIXED_LIBRARY
-        ${PACKAGE_PREFIX}_${LIBRARY_NAME}
-    )
-
     # Install public headers for build and distribution.
     _install_public_headers(
-        ${PACKAGE_PREFIX}
         ${LIBRARY_NAME}
         PUBLIC_HEADERS
         ${args_PUBLIC_HEADERS}
@@ -84,32 +75,66 @@ function(
 
     # Add a new shared library target.
     add_library(
-        ${PREFIXED_LIBRARY}
+        ${LIBRARY_NAME}
         SHARED
         ${args_CPPFILES}
     )
 
-    # Apply common compiler flags, and include path flags.
-    _set_compiler_flags(
-        ${PREFIXED_LIBRARY}
+    _finalize_cpp_library(
+        ${LIBRARY_NAME}
         INCLUDE_PATHS
-        ${args_INCLUDE_PATHS}
+            ${args_INCLUDE_PATHS}
+        LIBRARIES
+            ${args_LIBRARIES}
     )
 
-    # Link to libraries.
-    target_link_libraries(
-        ${PREFIXED_LIBRARY}
-        PRIVATE ${args_LIBRARIES}
+endfunction() # cpp_shared_library
+
+# Builds a new static library.
+function(
+    cpp_static_library
+    LIBRARY_NAME
+)
+    set(options)
+    set(oneValueArgs)
+    set(multiValueArgs
+        CPPFILES
+        PUBLIC_HEADERS
+        INCLUDE_PATHS
+        LIBRARIES
     )
 
-    # Install the built library.
-    install(
-        TARGETS ${PREFIXED_LIBRARY}
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
+    cmake_parse_arguments(
+        args
+        "${options}"
+        "${oneValueArgs}"
+        "${multiValueArgs}"
+        ${ARGN}
     )
 
-endfunction() # cpp_library
+    # Install public headers for build and distribution.
+    _install_public_headers(
+        ${LIBRARY_NAME}
+        PUBLIC_HEADERS
+        ${args_PUBLIC_HEADERS}
+    )
+
+    # Add a new shared library target.
+    add_library(
+        ${LIBRARY_NAME}
+        STATIC
+        ${args_CPPFILES}
+    )
+
+    _finalize_cpp_library(
+        ${LIBRARY_NAME}
+        INCLUDE_PATHS
+            ${args_INCLUDE_PATHS}
+        LIBRARIES
+            ${args_LIBRARIES}
+    )
+
+endfunction() # cpp_static_library
 
 # Builds a new executable program.
 function(

@@ -12,7 +12,7 @@ CMAKE_ARGS=\
 if [ $# -eq 0 ]
 then
     cmake $CMAKE_ARGS ..
-    cmake --build . -- all test -j 8
+    cmake --build . -- all test VERBOSE=1 -j 8
 else
     cmake $CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=$1 ..
     cmake --build . --target install -- -j 8
