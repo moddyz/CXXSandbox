@@ -40,7 +40,20 @@ function(
                 ${args_INCLUDE_PATHS}
     )
 
-endfunction() # _set_compiler_include_flags
+endfunction() # _set_compiler_flags
+
+function(
+    _set_link_flags
+    TARGET_NAME
+)
+    target_link_options(
+        ${TARGET_NAME}
+        PRIVATE
+            -Wl,--no-undefined
+            -Wl,--no-as-needed
+    )
+endfunction() # _set_compiler_flags
+
 
 # Utility function for deploying public headers.
 function(
@@ -96,6 +109,10 @@ function(
         ${LIBRARY_NAME}
         INCLUDE_PATHS
         ${args_INCLUDE_PATHS}
+    )
+
+    _set_link_flags(
+        ${LIBRARY_NAME}
     )
 
     # Link to libraries.

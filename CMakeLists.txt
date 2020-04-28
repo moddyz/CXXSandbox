@@ -20,9 +20,6 @@ list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}/cmake/modules")
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}/cmake/macros")
 include(Public)
 
-# Compiler options.
-string(APPEND CMAKE_SHARED_LINKER_FLAGS " -Wl,--no-undefined")
-
 # Testing.
 if(BUILD_TESTING)
     enable_testing()
