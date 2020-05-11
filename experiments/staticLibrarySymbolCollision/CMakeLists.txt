@@ -1,21 +1,29 @@
-cpp_static_library(staticLibA
+cpp_library(staticLibA
+    TYPE
+        STATIC
     CPPFILES
         staticLibA.cpp
 )
 
-cpp_static_library(staticLibB
+cpp_library(staticLibB
+    TYPE
+        STATIC
     CPPFILES
         staticLibB.cpp
 )
 
-cpp_shared_library(sharedLibA
+cpp_library(sharedLibA
+    TYPE
+        SHARED
     CPPFILES
         sharedLibA.cpp
     LIBRARIES
         staticLibA
 )
 
-cpp_shared_library(sharedLibB
+cpp_library(sharedLibB
+    TYPE
+        SHARED
     CPPFILES
         sharedLibB.cpp
     LIBRARIES

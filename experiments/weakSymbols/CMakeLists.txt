@@ -1,4 +1,6 @@
-cpp_shared_library(strong
+cpp_library(strong
+    TYPE
+        SHARED
     CPPFILES
         strong.cpp
 )
