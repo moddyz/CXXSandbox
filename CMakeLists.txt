@@ -28,4 +28,4 @@ endif()
 
 # Build targets.
 add_subdirectory(thirdparty)
-add_subdirectory(experiments)
+add_subdirectory(src)
