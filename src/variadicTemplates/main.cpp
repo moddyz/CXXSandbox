@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
+#include <numeric>
+
 template < typename First, typename... Args >
 auto Sum( const First first, const Args... args ) -> decltype( first )
 {
