@@ -1,4 +1,4 @@
-cpp_test_program(variadicTemplates
+cpp_test(variadicTemplates
     CPPFILES
         main.cpp
 )

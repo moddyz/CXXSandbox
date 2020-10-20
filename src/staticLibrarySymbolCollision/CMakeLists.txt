@@ -30,7 +30,7 @@ cpp_library(sharedLibB
         staticLibB
 )
 
-cpp_test_program(staticLibrarySymbolCollision
+cpp_test(staticLibrarySymbolCollision
     CPPFILES
         main.cpp
     LIBRARIES

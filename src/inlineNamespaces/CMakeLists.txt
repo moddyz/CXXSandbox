@@ -1,4 +1,4 @@
-cpp_test_program(inlineNamespaces
+cpp_test(inlineNamespaces
     CPPFILES
         main.cpp
 )

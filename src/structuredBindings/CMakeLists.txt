@@ -1,4 +1,4 @@
-cpp_test_program(structuredBindings
+cpp_test(structuredBindings
     CPPFILES
         main.cpp
 )

@@ -1,4 +1,4 @@
-cpp_test_program(lambdaExpressions
+cpp_test(lambdaExpressions
     CPPFILES
         main.cpp
 )
