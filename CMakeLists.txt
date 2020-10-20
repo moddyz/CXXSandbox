@@ -1,31 +1,29 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.12)
 
 # Project Name
 project(
-  CppExperiments
-  VERSION 0.0
-  DESCRIPTION "Experiments with the C++ language."
-  LANGUAGES CXX)
+    CXXSandbox
+    VERSION 0.0
+    DESCRIPTION "Basic template for starting out a new CMake-based project."
+    LANGUAGES CXX
+)
 
-# Cross-platform compatibility.
-if(UNIX AND NOT APPLE)
-  set(LINUX TRUE)
-endif()
+# Set module search paths.
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+                      ${CMAKE_CURRENT_SOURCE_DIR}/cmake
+                      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/tools)
+# Apply options.
+include(Options)
 
-# Discover modules.
-list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}/cmake/modules")
-# find_package(DEPENDENCY_NAME REQUIRED)
+# Tools
+include(Tools)
 
-# Discover macros.
-list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_SOURCE_DIR}/cmake/macros")
-include(Public)
+# Apply project defaults.
+include(Defaults)
 
-# Testing.
-if(BUILD_TESTING)
-    enable_testing()
-    list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
-endif()
-
-# Build targets.
+# Add targets.
 add_subdirectory(thirdparty)
 add_subdirectory(src)
+
+# Install exported targets.
+export_project(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in)

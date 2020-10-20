@@ -1,28 +1,34 @@
-# CppExperiments
+![Build and test](https://github.com/moddyz/CXXSandbox/workflows/Build%20and%20test/badge.svg)
 
-A collection of experiments with the C++ programming language.
+# CXXSandbox
+
+Various experiments with C++.
 
 ## Table of Contents
 
+- [Dependencies](#dependencies)
 - [Building](#building)
-  - [Requirements](#requirements)
-- [Build Status](#build-status)
+
+### Dependencies
+
+The following dependencies are mandatory:
+- C++ compiler
+- [CMake](https://cmake.org/documentation/) (3.12 or greater)
+
+The following dependencies are optional:
+- [Doxygen](https://www.doxygen.nl/index.html) and [graphiviz](https://graphviz.org/) for documentation.
 
 ## Building
 
-A convenience build script is also provided, for building all targets, and optionally installing to a location:
+Example snippet for building this project:
 ```
-./build.sh <OPTIONAL_INSTALL_LOCATION>
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX="/apps/CXXSandbox/" ..
+cmake --build  . -- VERBOSE=1 -j8 all test install
 ```
+CMake options for configuring this project:
 
-### Requirements
-
-- `>= CMake-3.17`
-- `>= C++17`
-
-## Build Status
-
-|       | master | 
-| ----- | ------ | 
-| macOS-10.14 | [![Build Status](https://travis-ci.com/moddyz/CppExperiments.svg?branch=master)](https://travis-ci.com/moddyz/CppExperiments) |
-
+| CMake Variable name     | Description                                                            | Default |
+| ----------------------- | ---------------------------------------------------------------------- | ------- |
+| `BUILD_TESTING`         | Enable automated testing.                                              | `OFF`   |
+| `BUILD_DOCUMENTATION`   | Build documentation.                                                   | `OFF`   |
