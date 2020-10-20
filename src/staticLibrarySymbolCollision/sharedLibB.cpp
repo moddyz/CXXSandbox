@@ -9,4 +9,4 @@ std::string FindLibrary()
 {
     return GetLibraryName();
 }
-} // B
+} // namespace B
