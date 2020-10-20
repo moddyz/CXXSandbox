@@ -20,7 +20,7 @@ The following dependencies are mandatory:
 Example snippet for building this project:
 ```
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX="/apps/CXXSandbox/" ..
+cmake -DBUILD_TESTING=ON -DCMAKE_INSTALL_PREFIX="/apps/CXXSandbox/" ..
 cmake --build  . -- VERBOSE=1 -j8 all test install
 ```
 CMake options for configuring this project:
