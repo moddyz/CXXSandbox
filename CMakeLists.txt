@@ -21,6 +21,9 @@ include(Tools)
 # Apply project defaults.
 include(Defaults)
 
+# Discover dependencies.
+include(Packages)
+
 # Add targets.
 add_subdirectory(thirdparty)
 add_subdirectory(src)

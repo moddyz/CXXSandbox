@@ -14,6 +14,7 @@ Sandbox for experimenting with the C++ language.
 The following dependencies are mandatory:
 - C++ compiler
 - [CMake](https://cmake.org/documentation/) (3.12 or greater)
+- [TBB](https://github.com/oneapi-src/oneTBB)
 
 ## Building
 
