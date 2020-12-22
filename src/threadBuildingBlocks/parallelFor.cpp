@@ -1,6 +1,8 @@
-#include <tbb/tbb.h>
+#include <tbb/parallel_for.h>
+
 #include <stdio.h>
 #include <sstream>
+#include <vector>
 
 #include "profiler.h"
 
@@ -38,8 +40,8 @@ main(int argc, char** argv)
     SerialForIncrement(serialArray);
 
     // Run parallel computation.
-    std::vector<int> serialArray(numElements, 1);
-    SerialForIncrement(serialArray);
+    std::vector<int> parallelArray(numElements, 1);
+    ParallelForIncrement(parallelArray);
 
     return EXIT_SUCCESS;
 }

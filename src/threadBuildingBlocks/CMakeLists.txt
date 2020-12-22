@@ -4,5 +4,5 @@ cpp_executable(tbbParallelFor
         parallelFor.cpp
 
     LIBRARIES
-
+        TBB::tbb
 )
