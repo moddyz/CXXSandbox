@@ -3,6 +3,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sstream>
+#include <cassert>
+
+#define ASSERT(expr) assert(expr);
 
 #define _SCOPED_PROFILER(file, line, string)                                   \
     ScopedProfiler profile##line(file, line, string);
