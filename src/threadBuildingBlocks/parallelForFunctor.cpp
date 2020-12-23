@@ -1,10 +1,9 @@
 #include <tbb/parallel_for.h>
 
 #include <stdio.h>
-#include <sstream>
 #include <vector>
 
-#include "profiler.h"
+#include "utils.h"
 
 static void
 SerialForIncrement(std::vector<int>& numbers)
@@ -47,14 +46,11 @@ main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {
-        printf("usage: tbbParallelFor <NUM_ELEMENTS>\n");
+        printf("usage: tbb_parallelForFunctor <NUM_ELEMENTS>\n");
         return EXIT_FAILURE;
     }
 
-    std::stringstream ss;
-    ss << argv[1];
-    size_t numElements = 0;
-    ss >> numElements;
+    int numElements = DeserializeString<int>(argv[1]);
 
     // Run serial computation.
     std::vector<int> serialArray(numElements, 1);

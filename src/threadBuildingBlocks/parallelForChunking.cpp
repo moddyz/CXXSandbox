@@ -15,27 +15,30 @@ SerialForIncrement(std::vector<int>& numbers)
 }
 
 static void
-ParallelForIncrement(std::vector<int>& numbers)
+ParallelForIncrement(int grainSize, std::vector<int>& numbers)
 {
     PROFILE_FUNCTION();
-    tbb::parallel_for(tbb::blocked_range<int>(0, numbers.size()),
-                      [&](const tbb::blocked_range<int>& range) {
-                          for (size_t i = range.begin(); i < range.end(); ++i) {
-                              numbers[i]++;
-                          }
-                      });
+    tbb::parallel_for(
+        tbb::blocked_range<int>(0, numbers.size(), grainSize),
+        [&](const tbb::blocked_range<int>& range) {
+            for (size_t i = range.begin(); i < range.end(); ++i) {
+                numbers[i]++;
+            }
+        },
+        tbb::simple_partitioner());
 }
 
 int
 main(int argc, char** argv)
 {
     // Parse arguments.
-    if (argc != 2) {
-        printf("usage: tbb_parallelForLambda <NUM_ELEMENTS>\n");
+    if (argc != 3) {
+        printf("usage: tbb_parallelForChunking <NUM_ELEMENTS> <GRAIN_SIZE>\n");
         return EXIT_FAILURE;
     }
 
     int numElements = DeserializeString<int>(argv[1]);
+    int grainSize = DeserializeString<int>(argv[2]);
 
     // Run serial computation.
     std::vector<int> serialArray(numElements, 1);
@@ -43,7 +46,7 @@ main(int argc, char** argv)
 
     // Run parallel computation.
     std::vector<int> parallelArray(numElements, 1);
-    ParallelForIncrement(parallelArray);
+    ParallelForIncrement(grainSize, parallelArray);
 
     return EXIT_SUCCESS;
 }

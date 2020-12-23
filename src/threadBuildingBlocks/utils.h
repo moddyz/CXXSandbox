@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <sstream>
 
 #define _SCOPED_PROFILER(file, line, string)                                   \
     ScopedProfiler profile##line(file, line, string);
@@ -78,3 +79,20 @@ private:
     timespec m_start = { 0, 0 };
     timespec m_stop = { 0, 0 };
 };
+
+/// Convert a string into a specified value type.
+///
+/// \tparam The desired value type.
+/// \param string String token.
+///
+/// \return The converted value.
+template< typename T >
+T DeserializeString( const char* string )
+{
+    std::stringstream ss;
+    ss << string;
+    T value;
+    ss >> value;
+    return value;
+}
+
