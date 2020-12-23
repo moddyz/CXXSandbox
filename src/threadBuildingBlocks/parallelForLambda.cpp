@@ -44,12 +44,12 @@ main(int argc, char** argv)
     int numElements = DeserializeString<int>(argv[1]);
 
     // Run serial computation.
-    std::vector<int> serialArray(numElements, 1);
-    SerialFor(serialArray);
+    std::vector<int> arrayA(numElements, 1);
+    SerialFor(arrayA);
 
     // Run parallel computation.
-    std::vector<int> parallelArray(numElements, 1);
-    ParallelFor(parallelArray);
+    std::vector<int> arrayB(numElements, 1);
+    ParallelFor(arrayB);
 
     return EXIT_SUCCESS;
 }

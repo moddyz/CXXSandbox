@@ -47,12 +47,12 @@ main(int argc, char** argv)
     int grainSize = DeserializeString<int>(argv[2]);
 
     // Run serial computation.
-    std::vector<int> serialArray(numElements, 1);
-    SerialFor(serialArray);
+    std::vector<int> arrayA(numElements, 1);
+    SerialFor(arrayA);
 
     // Run parallel computation.
-    std::vector<int> parallelArray(numElements, 1);
-    ParallelFor(grainSize, parallelArray);
+    std::vector<int> arrayB(numElements, 1);
+    ParallelFor(grainSize, arrayB);
 
     return EXIT_SUCCESS;
 }

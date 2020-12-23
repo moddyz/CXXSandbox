@@ -49,12 +49,12 @@ main(int argc, char** argv)
     int numElements = DeserializeString<int>(argv[1]);
 
     // Run serial computation.
-    std::vector<int> serialArray(numElements, 1);
-    int serialResult = SerialReduce(serialArray);
+    std::vector<int> arrayA(numElements, 1);
+    int serialResult = SerialReduce(arrayA);
 
     // Run parallel computation.
-    std::vector<int> parallelArray(numElements, 1);
-    int parallelResult = ParallelReduce(parallelArray);
+    std::vector<int> arrayB(numElements, 1);
+    int parallelResult = ParallelReduce(arrayB);
 
     ASSERT(serialResult == parallelResult);
 
