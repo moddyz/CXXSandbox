@@ -5,23 +5,29 @@
 
 #include "utils.h"
 
+static int
+Computation(int a, int b, int c)
+{
+    return a * b / (c + 1);
+}
+
 static void
-SerialForIncrement(std::vector<int>& numbers)
+SerialForIncrement(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
-    for (size_t i = 0; i < numbers.size(); ++i) {
-        numbers[i]++;
+    for (size_t i = 0; i < array.size(); ++i) {
+        array[i] = Computation(array[i], array[i], i);
     }
 }
 
 static void
-ParallelForIncrement(std::vector<int>& numbers)
+ParallelForIncrement(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
-    tbb::parallel_for(tbb::blocked_range<int>(0, numbers.size()),
+    tbb::parallel_for(tbb::blocked_range<int>(0, array.size()),
                       [&](const tbb::blocked_range<int>& range) {
                           for (size_t i = range.begin(); i < range.end(); ++i) {
-                              numbers[i]++;
+                              array[i] = Computation(array[i], array[i], i);
                           }
                       });
 }
