@@ -12,7 +12,7 @@ Computation(int a, int b, int c)
 }
 
 static void
-SerialForIncrement(std::vector<int>& array)
+SerialFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     for (size_t i = 0; i < array.size(); ++i) {
@@ -21,7 +21,7 @@ SerialForIncrement(std::vector<int>& array)
 }
 
 static void
-ParallelForIncrement(int grainSize, std::vector<int>& array)
+ParallelFor(int grainSize, std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     tbb::parallel_for(
@@ -48,11 +48,11 @@ main(int argc, char** argv)
 
     // Run serial computation.
     std::vector<int> serialArray(numElements, 1);
-    SerialForIncrement(serialArray);
+    SerialFor(serialArray);
 
     // Run parallel computation.
     std::vector<int> parallelArray(numElements, 1);
-    ParallelForIncrement(grainSize, parallelArray);
+    ParallelFor(grainSize, parallelArray);
 
     return EXIT_SUCCESS;
 }

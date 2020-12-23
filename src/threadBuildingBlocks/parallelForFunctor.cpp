@@ -12,7 +12,7 @@ Computation(int a, int b, int c)
 }
 
 static void
-SerialForIncrement(std::vector<int>& array)
+SerialFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     for (size_t i = 0; i < array.size(); ++i) {
@@ -20,10 +20,10 @@ SerialForIncrement(std::vector<int>& array)
     }
 }
 
-class IncrementFunctor
+class Functor
 {
 public:
-    IncrementFunctor(std::vector<int>& array)
+    Functor(std::vector<int>& array)
       : m_array(array)
     {}
 
@@ -39,12 +39,12 @@ private:
 };
 
 static void
-ParallelForIncrement(std::vector<int>& array)
+ParallelFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
     tbb::parallel_for(tbb::blocked_range<int>(0, array.size()),
-                      IncrementFunctor(array));
+                      Functor(array));
 }
 
 int
@@ -60,11 +60,11 @@ main(int argc, char** argv)
 
     // Run serial computation.
     std::vector<int> serialArray(numElements, 1);
-    SerialForIncrement(serialArray);
+    SerialFor(serialArray);
 
     // Run parallel computation.
     std::vector<int> parallelArray(numElements, 1);
-    ParallelForIncrement(parallelArray);
+    ParallelFor(parallelArray);
 
     return EXIT_SUCCESS;
 }
