@@ -110,18 +110,24 @@ main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {
-        printf("usage: tbb_parallelForLambda <NUM_ELEMENTS>\n");
+        printf("usage: tbb_parallelPipeline <NUM_ELEMENTS>\n");
         return EXIT_FAILURE;
     }
 
     int numElements = DeserializeString<int>(argv[1]);
 
     // Run serial pipeline.
-    std::vector<int> arrayA(numElements, 1);
+    std::vector<int> arrayA(numElements);
+    for (size_t i = 0; i < arrayA.size(); ++i) {
+        arrayA[i] = i;
+    }
     std::vector<int> outputA = SerialPipeline(arrayA);
 
     // Run parallel pipeline.
-    std::vector<int> arrayB(numElements, 1);
+    std::vector<int> arrayB(numElements);
+    for (size_t i = 0; i < arrayB.size(); ++i) {
+        arrayB[i] = i;
+    }
     std::vector<int> outputB = ParallelPipeline(arrayB);
 
     // Compare results.
