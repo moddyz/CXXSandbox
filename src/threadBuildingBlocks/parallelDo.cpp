@@ -29,20 +29,13 @@ SerialDo(std::list<int>& list)
     }
 }
 
-class Functor
-{
-public:
-    void operator()(int& number) const
-    {
-        number = RecursiveComputation(number, number, number, 500);
-    }
-};
-
 static void
 ParallelDo(std::list<int>& list)
 {
     PROFILE_FUNCTION();
-    tbb::parallel_do(list.begin(), list.end(), Functor());
+    tbb::parallel_do(list.begin(), list.end(), [=](int& number) {
+        number = RecursiveComputation(number, number, number, 500);
+    });
 }
 
 int
