@@ -18,10 +18,12 @@ main(int argc, char** argv)
         return output;
     });
 
+    // Schedule tasks on a few inputs.
     node.try_put(1);
     node.try_put(2);
     node.try_put(3);
 
+    // Block until all the tasks finish executing.
     graph.wait_for_all();
 
     return EXIT_SUCCESS;
