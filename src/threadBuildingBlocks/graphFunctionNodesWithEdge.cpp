@@ -12,7 +12,7 @@ main(int argc, char** argv)
 
     // Construct a function node which adds 5 to a number.
     tbb::flow::function_node<int, int> addNode(
-        graph, /* maxConcurrency*/ 1, [](int input) -> int {
+        graph, /* maxConcurrency*/ tbb::flow::unlimited, [](int input) -> int {
             printf("[Add] Consumed %i input\n", input);
             int output = input + 5;
             printf("[Add] Produced %i output\n", output);
