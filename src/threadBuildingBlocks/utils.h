@@ -5,15 +5,28 @@
 #include <sstream>
 #include <cassert>
 
-#define ASSERT(expr) assert(expr);
+#define _ASSERT(file, line, expr)                                              \
+    if (expr) {                                                                \
+        fprintf(stderr,                                                        \
+                "Assertion '%s' failed at %s:%d! Aborting.\n",                 \
+                #expr,                                                         \
+                file,                                                          \
+                line);                                                         \
+        exit(EXIT_FAILURE);                                                    \
+    }
+
+/// \def ASSERT
+///
+/// Exits the program with EXIT_FAILURE if the expression evaluates to \p false.
+#define ASSERT(expr) _ASSERT(__FILE__, __LINE__, expr);
 
 #define _SCOPED_PROFILER(file, line, string)                                   \
     ScopedProfiler profile##line(file, line, string);
 
 /// \def PROFILE_FUNCTION
 ///
-/// Insert a scoped profiler tagged with the pretty-function interpretation
-/// of the parent function.
+/// Insert a scoped profiler tagged with the pretty-function
+/// interpretation of the parent function.
 #define PROFILE_FUNCTION()                                                     \
     _SCOPED_PROFILER(__FILE__, __LINE__, __PRETTY_FUNCTION__)
 
@@ -61,7 +74,8 @@ public:
     }
 
 private:
-    // Compute the timespec elapsed between \p i_start and \p i_stop.
+    // Compute the timespec elapsed between \p i_start and \p
+    // i_stop.
     static timespec _ComputeElapsed(const timespec& i_start,
                                     const timespec& i_stop)
     {
