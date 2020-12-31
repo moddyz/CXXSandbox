@@ -114,7 +114,7 @@ main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    int numElements = DeserializeString<int>(argv[1]);
+    int numElements = DeserializeValue<int>(argv[1]);
 
     // Run serial pipeline.
     std::vector<int> arrayA(numElements);

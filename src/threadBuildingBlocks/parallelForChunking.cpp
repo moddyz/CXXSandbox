@@ -43,8 +43,8 @@ main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    int numElements = DeserializeString<int>(argv[1]);
-    int grainSize = DeserializeString<int>(argv[2]);
+    int numElements = DeserializeValue<int>(argv[1]);
+    int grainSize = DeserializeValue<int>(argv[2]);
 
     // Run serial computation.
     std::vector<int> arrayA(numElements, 1);

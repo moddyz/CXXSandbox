@@ -89,8 +89,9 @@ private:
 /// \param string String token.
 ///
 /// \return The converted value.
-template< typename T >
-T DeserializeString( const char* string )
+template<typename T>
+T
+DeserializeValue(const char* string)
 {
     std::stringstream ss;
     ss << string;
@@ -99,3 +100,17 @@ T DeserializeString( const char* string )
     return value;
 }
 
+/// Convert a value into a string.
+///
+/// \tparam The input value type.
+/// \param value Input value.
+///
+/// \return The converted string value.
+template<typename T>
+std::string
+SerializeValue(const T& value)
+{
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
