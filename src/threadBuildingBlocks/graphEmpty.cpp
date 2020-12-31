@@ -4,7 +4,8 @@
 
 #include "utils.h"
 
-int main( int argc, char** argv)
+int
+main(int argc, char** argv)
 {
     PROFILE_FUNCTION();
 
@@ -12,4 +13,3 @@ int main( int argc, char** argv)
     graph.wait_for_all();
     return EXIT_SUCCESS;
 }
-

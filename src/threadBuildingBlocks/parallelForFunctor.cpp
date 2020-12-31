@@ -43,8 +43,7 @@ ParallelFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
-    tbb::parallel_for(tbb::blocked_range<int>(0, array.size()),
-                      Functor(array));
+    tbb::parallel_for(tbb::blocked_range<int>(0, array.size()), Functor(array));
 }
 
 int

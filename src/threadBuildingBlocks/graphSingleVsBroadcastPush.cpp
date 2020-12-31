@@ -45,7 +45,8 @@ main(int argc, char** argv)
 
     //
     // Single push policy.
-    // _Each_ input into the buffer node will be pushed to a _single_ downstream node.
+    // _Each_ input into the buffer node will be pushed to a _single_ downstream
+    // node.
     //
 
     // Define a single buffer node, which uses a "single-push" policy,
@@ -73,7 +74,8 @@ main(int argc, char** argv)
 
     //
     // Broadcast push policy.
-    // _Each_ input into the broadcast node will be pushed to _all_ downstream nodes.
+    // _Each_ input into the broadcast node will be pushed to _all_ downstream
+    // nodes.
     //
 
     // Remove single-push edges.
@@ -112,4 +114,3 @@ main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-

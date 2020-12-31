@@ -60,7 +60,8 @@ main(int argc, char** argv)
                std::get<1>(outputValue));
     }
 
-    // Pull inputBufferA (should be empty, because the reserved 3 was joined with the 4).
+    // Pull inputBufferA (should be empty, because the reserved 3 was joined
+    // with the 4).
     int value;
     if (inputBufferA.try_get(value)) {
         printf("inputBufferA had %d\n", value);
@@ -68,8 +69,8 @@ main(int argc, char** argv)
         printf("inputBufferA was empty\n");
     }
 
-    // Pull inputBufferB, should be 7 because it was reserved in the buffer node as it
-    // had nothing to join with.
+    // Pull inputBufferB, should be 7 because it was reserved in the buffer node
+    // as it had nothing to join with.
     if (inputBufferB.try_get(value)) {
         printf("inputBufferB had %d\n", value);
     } else {
