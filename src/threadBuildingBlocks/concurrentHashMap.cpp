@@ -35,7 +35,7 @@ ConcurrentHashMap(size_t numElements)
 {
     PROFILE_FUNCTION();
 
-    tbb::concurrent_hash_map<std::string, std::string> hashMap;
+    ConcurrentHashMapT hashMap;
     tbb::parallel_for(tbb::blocked_range<int>(0, numElements),
                       [&](const tbb::blocked_range<int>& range) {
                           for (size_t i = range.begin(); i < range.end(); ++i) {
