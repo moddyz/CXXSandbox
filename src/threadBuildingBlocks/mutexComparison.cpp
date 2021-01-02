@@ -9,20 +9,22 @@
 #include "utils.h"
 
 template<typename MutexT>
-static void
+static int
 CounterProgram(size_t numElements)
 {
     PROFILE_FUNCTION();
 
-    int counter = 0;
+    int count = 0;
     MutexT mutex;
     tbb::parallel_for(tbb::blocked_range<int>(0, numElements),
                       [&](const tbb::blocked_range<int>& range) {
+                          typename MutexT::scoped_lock lock(mutex);
                           for (size_t i = range.begin(); i < range.end(); ++i) {
-                              typename MutexT::scoped_lock lock(mutex);
-                              counter += 1;
+                              count += 1;
                           }
                       });
+
+    return count;
 }
 
 int
@@ -36,9 +38,9 @@ main(int argc, char** argv)
 
     int numElements = DeserializeValue<int>(argv[1]);
 
-    CounterProgram<tbb::spin_mutex>(numElements);
-    CounterProgram<tbb::mutex>(numElements);
-    CounterProgram<tbb::queuing_mutex>(numElements);
+    ASSERT(CounterProgram<tbb::spin_mutex>(numElements) == numElements);
+    ASSERT(CounterProgram<tbb::mutex>(numElements) == numElements);
+    ASSERT(CounterProgram<tbb::queuing_mutex>(numElements) == numElements);
 
     return EXIT_SUCCESS;
 }

@@ -6,7 +6,7 @@
 #include <cassert>
 
 #define _ASSERT(file, line, expr)                                              \
-    if (expr) {                                                                \
+    if (!(expr)) {                                                               \
         fprintf(stderr,                                                        \
                 "Assertion '%s' failed at %s:%d! Aborting.\n",                 \
                 #expr,                                                         \
