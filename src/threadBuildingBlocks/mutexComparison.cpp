@@ -2,6 +2,7 @@
 #include <tbb/spin_mutex.h>
 #include <tbb/mutex.h>
 #include <tbb/queuing_mutex.h>
+#include <tbb/recursive_mutex.h>
 #include <tbb/null_mutex.h>
 
 #include <stdio.h>
