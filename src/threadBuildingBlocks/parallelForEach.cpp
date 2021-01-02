@@ -9,7 +9,7 @@
 static int
 Fibonacci(int n)
 {
-    if (n > 2) {
+    if (n >= 2) {
         return Fibonacci(n - 2) + Fibonacci(n - 1);
     } else {
         return n;
@@ -53,11 +53,11 @@ main(int argc, char** argv)
     int numElements = DeserializeValue<int>(argv[1]);
 
     // Run serial computation.
-    std::vector<int> arrayA(numElements, 1);
+    std::vector<int> arrayA(numElements, 10);
     int serialSum = SerialForEach(arrayA);
 
     // Run parallel computation.
-    std::vector<int> arrayB(numElements, 1);
+    std::vector<int> arrayB(numElements, 10);
     int parallelSum = ParallelForEach(arrayB);
 
     // Validate results.
