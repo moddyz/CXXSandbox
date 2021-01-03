@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.12)
 project(
     CXXSandbox
     VERSION 0.0
-    DESCRIPTION "Basic template for starting out a new CMake-based project."
+    DESCRIPTION "Sandbox for experimenting with C++ language and commonly used libraries."
     LANGUAGES CXX
 )
 
