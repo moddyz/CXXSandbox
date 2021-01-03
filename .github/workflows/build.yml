@@ -35,7 +35,7 @@ jobs:
           mkdir -p /tmp/src
           git clone https://github.com/wjakob/tbb.git /tmp/src/tbb
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-                ..
+                /tmp/src/tbb
           cmake --build . \
                 --verbose \
                 --target install \
