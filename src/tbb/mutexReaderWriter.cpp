@@ -8,16 +8,16 @@
 
 using ContainerT = std::unordered_map<int, std::string>;
 
-std::string
-ComputeValueForKey(int key)
+std::string ComputeValueForKey(int key)
 {
     int remainder = key % 23;
     return SerializeValue(remainder);
 }
 
 template<typename ReaderWriterMutexT>
-const std::string&
-ThreadSafeGetOrCreate(int key, ContainerT& container, ReaderWriterMutexT& mutex)
+const std::string& ThreadSafeGetOrCreate(int key,
+                                         ContainerT& container,
+                                         ReaderWriterMutexT& mutex)
 {
     // Acquire reader lock.
     typename ReaderWriterMutexT::scoped_lock lock(mutex, /* is_writer */ false);
@@ -50,8 +50,7 @@ ThreadSafeGetOrCreate(int key, ContainerT& container, ReaderWriterMutexT& mutex)
 }
 
 template<typename ReaderWriterMutexT>
-static void
-InsertProgram(size_t numElements)
+static void InsertProgram(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -67,8 +66,7 @@ InsertProgram(size_t numElements)
                       });
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

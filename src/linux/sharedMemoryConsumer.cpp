@@ -3,8 +3,7 @@
 #include <fcntl.h>    // File access modifiers.
 #include <sys/mman.h> // Shared memory API.
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Create the shared memory object.
     int sharedMemFd = shm_open("TestSharedMemory", O_RDONLY, 0666);

@@ -10,8 +10,7 @@
 constexpr int SLICE_SIZE = 100;
 using Slice = std::array<int, SLICE_SIZE>;
 
-static int
-ProcessSlice(const Slice& slice)
+static int ProcessSlice(const Slice& slice)
 {
     int sum = 0;
     for (size_t index = 0; index < slice.size(); ++index) {
@@ -20,8 +19,7 @@ ProcessSlice(const Slice& slice)
     return sum;
 }
 
-static std::vector<int>
-SerialPipeline(std::vector<int>& array)
+static std::vector<int> SerialPipeline(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
@@ -50,8 +48,7 @@ SerialPipeline(std::vector<int>& array)
     return outputArray;
 }
 
-static std::vector<int>
-ParallelPipeline(std::vector<int>& array)
+static std::vector<int> ParallelPipeline(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
@@ -105,8 +102,7 @@ ParallelPipeline(std::vector<int>& array)
     return outputArray;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

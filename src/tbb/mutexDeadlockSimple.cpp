@@ -1,7 +1,6 @@
 #include <tbb/mutex.h>
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     tbb::mutex mutex;
     tbb::mutex::scoped_lock lockA(mutex);

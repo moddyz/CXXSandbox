@@ -11,8 +11,7 @@
 #include "utils.h"
 
 template<typename MutexT>
-static int
-CounterProgram(size_t numElements)
+static int CounterProgram(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -29,8 +28,7 @@ CounterProgram(size_t numElements)
     return count;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

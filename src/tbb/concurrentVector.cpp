@@ -9,8 +9,7 @@
 using SerialVectorT = std::vector<int>;
 using ConcurrentVectorT = tbb::concurrent_vector<int>;
 
-static SerialVectorT
-SerialVectorPushBack(size_t numElements)
+static SerialVectorT SerialVectorPushBack(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -22,8 +21,7 @@ SerialVectorPushBack(size_t numElements)
     return vector;
 }
 
-static ConcurrentVectorT
-ConcurrentVectorPushBack(size_t numElements)
+static ConcurrentVectorT ConcurrentVectorPushBack(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -38,8 +36,7 @@ ConcurrentVectorPushBack(size_t numElements)
     return vector;
 }
 
-static ConcurrentVectorT
-ConcurrentVectorGrowToAtLeast(size_t numElements)
+static ConcurrentVectorT ConcurrentVectorGrowToAtLeast(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -55,8 +52,7 @@ ConcurrentVectorGrowToAtLeast(size_t numElements)
     return vector;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     if (argc != 2) {
         printf("usage: tbb_parallelForLambda <NUM_ELEMENTS>\n");

@@ -6,14 +6,12 @@
 
 using ArrayT = std::vector<int>;
 
-static int
-Computation(int a, int b, int c)
+static int Computation(int a, int b, int c)
 {
     return a * b / (c + 1);
 }
 
-static ArrayT
-SerialInvoke(int numElements)
+static ArrayT SerialInvoke(int numElements)
 {
     PROFILE_FUNCTION();
 
@@ -25,8 +23,7 @@ SerialInvoke(int numElements)
     return array;
 }
 
-static ArrayT
-ParallelInvoke(int numElements)
+static ArrayT ParallelInvoke(int numElements)
 {
     PROFILE_FUNCTION();
 
@@ -47,8 +44,7 @@ ParallelInvoke(int numElements)
     return array;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

@@ -6,8 +6,7 @@
 
 #include "utils.h"
 
-static int
-SerialReduce(std::vector<int>& array)
+static int SerialReduce(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
@@ -19,8 +18,7 @@ SerialReduce(std::vector<int>& array)
     return sum;
 }
 
-static int
-ParallelReduce(std::vector<int>& array)
+static int ParallelReduce(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     // XXX: Aren't the kernel and reduction function the same?
@@ -37,8 +35,7 @@ ParallelReduce(std::vector<int>& array)
         /* reduction */ std::plus<int>());
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

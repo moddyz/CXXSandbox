@@ -4,8 +4,7 @@
 #include <unistd.h>   // ftruncate and sleep.
 #include <sys/mman.h> // Shared memory API.
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Create the shared memory object.
     int sharedMemFd = shm_open("TestSharedMemory", O_CREAT | O_RDWR, 0666);

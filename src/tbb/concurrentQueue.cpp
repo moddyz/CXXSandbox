@@ -9,8 +9,7 @@
 using SerialQueueT = std::queue<int>;
 using ConcurrentQueueT = tbb::concurrent_queue<int>;
 
-static SerialQueueT
-SerialQueuePushAndPop(size_t numElements)
+static SerialQueueT SerialQueuePushAndPop(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -28,8 +27,7 @@ SerialQueuePushAndPop(size_t numElements)
     return queue;
 }
 
-static ConcurrentQueueT
-ConcurrentQueuePushAndPop(size_t numElements)
+static ConcurrentQueueT ConcurrentQueuePushAndPop(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -58,8 +56,7 @@ ConcurrentQueuePushAndPop(size_t numElements)
     return queue;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     if (argc != 2) {
         printf("usage: tbb_parallelForLambda <NUM_ELEMENTS>\n");

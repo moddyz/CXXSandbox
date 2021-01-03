@@ -2,6 +2,4 @@
 
 #include "vector.h"
 
-TEST_CASE( "Vector_Initializer" )
-{
-}
+TEST_CASE("Vector_Initializer") {}

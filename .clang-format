@@ -4,3 +4,5 @@ IndentWidth: 4
 ContinuationIndentWidth: 4
 IndentPPDirectives: AfterHash
 SortIncludes: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakAfterDefinitionReturnType: None

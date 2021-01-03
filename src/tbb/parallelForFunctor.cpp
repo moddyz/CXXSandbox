@@ -5,14 +5,12 @@
 
 #include "utils.h"
 
-static int
-Computation(int a, int b, int c)
+static int Computation(int a, int b, int c)
 {
     return a * b / (c + 1);
 }
 
-static void
-SerialFor(std::vector<int>& array)
+static void SerialFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     for (size_t i = 0; i < array.size(); ++i) {
@@ -38,16 +36,14 @@ private:
     std::vector<int>& m_array;
 };
 
-static void
-ParallelFor(std::vector<int>& array)
+static void ParallelFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
     tbb::parallel_for(tbb::blocked_range<int>(0, array.size()), Functor(array));
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

@@ -6,14 +6,12 @@
 
 #include "utils.h"
 
-static int
-Computation(int a, int b, int c)
+static int Computation(int a, int b, int c)
 {
     return a * b / (c + 1);
 }
 
-static int
-SerialReduce(std::vector<int>& array)
+static int SerialReduce(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
@@ -61,8 +59,7 @@ private:
     int m_sum = 0;
 };
 
-static int
-ParallelReduce(std::vector<int>& array)
+static int ParallelReduce(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     Reduction reduction(array);
@@ -70,8 +67,7 @@ ParallelReduce(std::vector<int>& array)
     return reduction.GetSum();
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

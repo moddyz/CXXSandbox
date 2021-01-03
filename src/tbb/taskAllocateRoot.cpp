@@ -17,8 +17,7 @@ private:
     int& m_result;
 };
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     int result;
 

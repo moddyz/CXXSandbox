@@ -8,9 +8,6 @@
 /// \class Vector
 ///
 /// \tparam ValueT The type of each element.
-template< typename ValueT >
+template<typename ValueT>
 class Vector
-{
-
-
-};
+{};

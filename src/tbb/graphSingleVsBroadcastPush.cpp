@@ -24,8 +24,7 @@ struct IncrementCounters
     Counter& m_count;
 };
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     PROFILE_FUNCTION();
 

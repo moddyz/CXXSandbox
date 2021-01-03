@@ -10,15 +10,13 @@ using SerialHashMapT = std::unordered_map<std::string, std::string>;
 using ConcurrentHashMapT = tbb::concurrent_hash_map<std::string, std::string>;
 
 template<typename HashMapT>
-static void
-InsertValue(int value, HashMapT& hashMap)
+static void InsertValue(int value, HashMapT& hashMap)
 {
     hashMap.insert(std::pair<std::string, std::string>(
         SerializeValue(value), SerializeValue(value * 10)));
 }
 
-static SerialHashMapT
-SerialHashMap(size_t numElements)
+static SerialHashMapT SerialHashMap(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -30,8 +28,7 @@ SerialHashMap(size_t numElements)
     return hashMap;
 }
 
-static ConcurrentHashMapT
-ConcurrentHashMap(size_t numElements)
+static ConcurrentHashMapT ConcurrentHashMap(size_t numElements)
 {
     PROFILE_FUNCTION();
 
@@ -46,8 +43,7 @@ ConcurrentHashMap(size_t numElements)
     return hashMap;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     if (argc != 2) {
         printf("usage: tbb_parallelForLambda <NUM_ELEMENTS>\n");

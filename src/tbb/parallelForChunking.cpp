@@ -5,14 +5,12 @@
 
 #include "utils.h"
 
-static int
-Computation(int a, int b, int c)
+static int Computation(int a, int b, int c)
 {
     return a * b / (c + 1);
 }
 
-static void
-SerialFor(std::vector<int>& array)
+static void SerialFor(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     for (size_t i = 0; i < array.size(); ++i) {
@@ -20,8 +18,7 @@ SerialFor(std::vector<int>& array)
     }
 }
 
-static void
-ParallelFor(int grainSize, std::vector<int>& array)
+static void ParallelFor(int grainSize, std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     tbb::parallel_for(
@@ -34,8 +31,7 @@ ParallelFor(int grainSize, std::vector<int>& array)
         tbb::simple_partitioner());
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 3) {

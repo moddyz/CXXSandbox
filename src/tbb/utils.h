@@ -6,7 +6,7 @@
 #include <cassert>
 
 #define _ASSERT(file, line, expr)                                              \
-    if (!(expr)) {                                                               \
+    if (!(expr)) {                                                             \
         fprintf(stderr,                                                        \
                 "Assertion '%s' failed at %s:%d! Aborting.\n",                 \
                 #expr,                                                         \
@@ -104,8 +104,7 @@ private:
 ///
 /// \return The converted value.
 template<typename T>
-T
-DeserializeValue(const char* string)
+T DeserializeValue(const char* string)
 {
     std::stringstream ss;
     ss << string;
@@ -121,8 +120,7 @@ DeserializeValue(const char* string)
 ///
 /// \return The converted string value.
 template<typename T>
-std::string
-SerializeValue(const T& value)
+std::string SerializeValue(const T& value)
 {
     std::stringstream ss;
     ss << value;

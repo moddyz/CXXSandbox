@@ -9,8 +9,7 @@
 // TBB documentation says that each unit of work should take a least a few
 // thousand instructions to reap benefits of processing a linked list (due to
 // its serialized fetching of work).
-static int
-RecursiveComputation(int a, int b, int c, int depth)
+static int RecursiveComputation(int a, int b, int c, int depth)
 {
     if (depth == 0) {
         return 1;
@@ -19,8 +18,7 @@ RecursiveComputation(int a, int b, int c, int depth)
     return a * b / (c + 1) * RecursiveComputation(a, b, c, depth - 1);
 }
 
-static void
-SerialDo(std::list<int>& list)
+static void SerialDo(std::list<int>& list)
 {
     PROFILE_FUNCTION();
     for (std::list<int>::iterator it = list.begin(); it != list.end(); ++it) {
@@ -29,8 +27,7 @@ SerialDo(std::list<int>& list)
     }
 }
 
-static void
-ParallelDo(std::list<int>& list)
+static void ParallelDo(std::list<int>& list)
 {
     PROFILE_FUNCTION();
     tbb::parallel_do(list.begin(), list.end(), [=](int& number) {
@@ -38,8 +35,7 @@ ParallelDo(std::list<int>& list)
     });
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {

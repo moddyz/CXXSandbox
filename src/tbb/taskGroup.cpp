@@ -1,8 +1,7 @@
 #include <tbb/task_group.h>
 
 // Computes the N'th fibonacci number.
-static int
-Fibonacci(int n)
+static int Fibonacci(int n)
 {
     if (n >= 2) {
         return Fibonacci(n - 2) + Fibonacci(n - 1);
@@ -26,8 +25,7 @@ private:
     int& m_result;
 };
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     int fibA, fibB;
 

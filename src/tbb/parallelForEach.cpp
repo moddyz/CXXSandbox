@@ -6,8 +6,7 @@
 
 #include "utils.h"
 
-static int
-Fibonacci(int n)
+static int Fibonacci(int n)
 {
     if (n >= 2) {
         return Fibonacci(n - 2) + Fibonacci(n - 1);
@@ -16,8 +15,7 @@ Fibonacci(int n)
     }
 }
 
-static int
-SerialForEach(std::vector<int>& array)
+static int SerialForEach(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
 
@@ -29,8 +27,7 @@ SerialForEach(std::vector<int>& array)
     return sum;
 }
 
-static int
-ParallelForEach(std::vector<int>& array)
+static int ParallelForEach(std::vector<int>& array)
 {
     PROFILE_FUNCTION();
     tbb::atomic<int> sum{ 0 };
@@ -41,8 +38,7 @@ ParallelForEach(std::vector<int>& array)
     return sum;
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     // Parse arguments.
     if (argc != 2) {
