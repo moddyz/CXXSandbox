@@ -1,9 +1,8 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-
 // Lambda Expressions since C++11
 //
 // Callable objects which can capture values or references at time of initialization.
+
+#include <catch2/catch.hpp>
 
 TEST_CASE( "LambdaExpressions" )
 {

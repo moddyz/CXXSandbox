@@ -1,9 +1,8 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-
 // Inline Namespaces in C++ 11
 //
 // Everything declared inside a inline namespace is _also_ part of the parent namespace.
+
+#include <catch2/catch.hpp>
 
 namespace library
 {

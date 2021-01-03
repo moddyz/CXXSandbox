@@ -1,11 +1,9 @@
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-
-#include <unordered_map>
-
 // Structured bindings in C++17.
 //
 // Initialize multiple variables from a tuple, pair, or struct concisely.
+
+#include <catch2/catch.hpp>
+#include <unordered_map>
 
 using Vec3f = std::tuple< float, float, float >;
 
