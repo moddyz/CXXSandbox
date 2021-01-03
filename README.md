@@ -2,7 +2,7 @@
 
 # CXXSandbox
 
-Sandbox for experimenting with the C++ language.
+Sandbox for experimenting with C++ language and commonly used libraries.
 
 ## Table of Contents
 

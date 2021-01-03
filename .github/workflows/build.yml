@@ -28,8 +28,23 @@ jobs:
        docs=${{ matrix.build-docs }}>'
     runs-on: ubuntu-20.04
     steps:
-      - name: Install dependencies (Linux)
+      - name: Install CMake
         run: sudo apt-get install cmake
+      - name: Install TBB
+        run: |
+          mkdir -p /tmp/src
+          git clone https://github.com/wjakob/tbb.git /tmp/src/tbb
+          mkdir -p /tmp/src/tbb/_build
+          cd /tmp/src/tbb/_build
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+                -DTBB_BUILD_TESTS=OFF \
+                -DTBB_BUILD_TBBMALLOC=OFF \
+                -DTBB_BUILD_TBBMALLOC_PROXY=OFF \
+                ..
+          sudo cmake --build . \
+                --verbose \
+                --target install \
+                --config ${{ matrix.build-type }}
       - uses: actions/checkout@v2
       - name: Create build directories
         run: |
@@ -54,90 +69,90 @@ jobs:
         run: ctest -VV --output-on-failure -C ${{ matrix.build-type }}
         working-directory: _build
 
-  windows-build:
-    strategy:
-      matrix:
-        build:
-          - 1
-        include:
-          - build: 1
-            build-type: Release
-            build-tests: 'ON'
-            build-docs: 'OFF'
-    name: 'Windows 2019 
-      <MSVC 16.4 
-       type=${{ matrix.build-type }}, 
-       tests=${{ matrix.build-tests }}, 
-       docs=${{ matrix.build-docs }}>'
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v2
-      - name: Create build directories
-        run: |
-          mkdir _build
-          mkdir _install
-        shell: bash
-      - name: Configure
-        run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-                -DBUILD_TESTING=${{ matrix.build-tests }} \
-                -DBUILD_DOCUMENTATION=${{ matrix.build-docs }} \
-                -DCMAKE_INSTALL_PREFIX=../_install \
-                ..
-        shell: bash
-        working-directory: _build
-      - name: Build
-        run: |
-          cmake --build . \
-                --verbose \
-                --target install \
-                --config ${{ matrix.build-type }}
-        shell: bash
-        working-directory: _build
-     #- name: Test
-     #  run: ctest -VV --output-on-failure -C ${{ matrix.build-type }}
-     #  shell: bash
-     #  working-directory: _build
+ #windows-build:
+ #  strategy:
+ #    matrix:
+ #      build:
+ #        - 1
+ #      include:
+ #        - build: 1
+ #          build-type: Release
+ #          build-tests: 'ON'
+ #          build-docs: 'OFF'
+ #  name: 'Windows 2019 
+ #    <MSVC 16.4 
+ #     type=${{ matrix.build-type }}, 
+ #     tests=${{ matrix.build-tests }}, 
+ #     docs=${{ matrix.build-docs }}>'
+ #  runs-on: windows-2019
+ #  steps:
+ #    - uses: actions/checkout@v2
+ #    - name: Create build directories
+ #      run: |
+ #        mkdir _build
+ #        mkdir _install
+ #      shell: bash
+ #    - name: Configure
+ #      run: |
+ #        cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+ #              -DBUILD_TESTING=${{ matrix.build-tests }} \
+ #              -DBUILD_DOCUMENTATION=${{ matrix.build-docs }} \
+ #              -DCMAKE_INSTALL_PREFIX=../_install \
+ #              ..
+ #      shell: bash
+ #      working-directory: _build
+ #    - name: Build
+ #      run: |
+ #        cmake --build . \
+ #              --verbose \
+ #              --target install \
+ #              --config ${{ matrix.build-type }}
+ #      shell: bash
+ #      working-directory: _build
+ #   #- name: Test
+ #   #  run: ctest -VV --output-on-failure -C ${{ matrix.build-type }}
+ #   #  shell: bash
+ #   #  working-directory: _build
 
-  macos-build:
-    strategy:
-      matrix:
-        build:
-          - 1
-        include:
-          - build: 1
-            build-type: Release
-            build-tests: 'ON'
-            build-docs: 'OFF'
-    name: 'Mac OSX 10.15
-      <type=${{ matrix.build-type }}, 
-       tests=${{ matrix.build-tests }}, 
-       docs=${{ matrix.build-docs }}>'
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@v2
-      - name: Create build directories
-        run: |
-          mkdir _build
-          mkdir _install
-      - name: Configure
-        run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-                -DBUILD_TESTING=${{ matrix.build-tests }} \
-                -DBUILD_DOCUMENTATION=${{ matrix.build-docs }} \
-                -DCMAKE_INSTALL_PREFIX=../_install \
-                 .. \
-        working-directory: _build
-      - name: Build
-        run: |
-          cmake --build . \
-                --verbose \
-                --target install \
-                --config ${{ matrix.build-type }}
-        working-directory: _build
-      - name: Test
-        run: ctest -VV --output-on-failure -C ${{ matrix.build-type }}
-        working-directory: _build
+ #macos-build:
+ #  strategy:
+ #    matrix:
+ #      build:
+ #        - 1
+ #      include:
+ #        - build: 1
+ #          build-type: Release
+ #          build-tests: 'ON'
+ #          build-docs: 'OFF'
+ #  name: 'Mac OSX 10.15
+ #    <type=${{ matrix.build-type }}, 
+ #     tests=${{ matrix.build-tests }}, 
+ #     docs=${{ matrix.build-docs }}>'
+ #  runs-on: macos-10.15
+ #  steps:
+ #    - uses: actions/checkout@v2
+ #    - name: Create build directories
+ #      run: |
+ #        mkdir _build
+ #        mkdir _install
+ #    - name: Configure
+ #      run: |
+ #        cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+ #              -DBUILD_TESTING=${{ matrix.build-tests }} \
+ #              -DBUILD_DOCUMENTATION=${{ matrix.build-docs }} \
+ #              -DCMAKE_INSTALL_PREFIX=../_install \
+ #               .. \
+ #      working-directory: _build
+ #    - name: Build
+ #      run: |
+ #        cmake --build . \
+ #              --verbose \
+ #              --target install \
+ #              --config ${{ matrix.build-type }}
+ #      working-directory: _build
+ #    - name: Test
+ #      run: ctest -VV --output-on-failure -C ${{ matrix.build-type }}
+ #      working-directory: _build
 
   # Run automated code formatting checks.
   check-code-formatting:
