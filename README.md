@@ -29,3 +29,4 @@ CMake options for configuring this project:
 | CMake Variable name     | Description                                                            | Default |
 | ----------------------- | ---------------------------------------------------------------------- | ------- |
 | `BUILD_TESTING`         | Enable automated testing.                                              | `OFF`   |
+| `BUILD_BENCHMARKING`    | Enable automated benchmarking.                                         | `OFF`   |

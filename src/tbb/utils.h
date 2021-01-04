@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sstream>
-#include <cassert>
 
 #define _ASSERT(file, line, expr)                                              \
     if (!(expr)) {                                                             \

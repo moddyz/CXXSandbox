@@ -1,9 +1,18 @@
 # Get the current directory name to use as the test target.
-get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+get_filename_component(DIR_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
-# Create a single test target using all the .cpp source files in this dir.
-file(GLOB CPPFILES *.cpp)
-cpp_test(${TEST_NAME}
+# Create a single test target.
+file(GLOB TEST_CPPFILES test*.cpp)
+cpp_test(${DIR_NAME}_test
     CPPFILES
-        ${CPPFILES}
+        ${TEST_CPPFILES}
 )
+
+if (BUILD_BENCHMARKING)
+    # Create a single benchmark target.
+    file(GLOB BENCHMARK_CPPFILES benchmark*.cpp)
+    cpp_test(${DIR_NAME}_benchmark
+        CPPFILES
+            ${BENCHMARK_CPPFILES}
+    )
+endif()
