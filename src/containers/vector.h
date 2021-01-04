@@ -37,7 +37,7 @@ public:
     {
         // No-op if specified count is less-than-or-equal current capacity.
         if (count > m_capacity) {
-            value_type* newBuffer = AllocAndMigrate(count);
+            value_type* newBuffer = _AllocAndMigrate(count);
             free(m_buffer);
 
             // Update internal members.
@@ -59,7 +59,7 @@ public:
 
         // No-op if specified count is less-than-or-equal current capacity.
         if (count > m_capacity) {
-            value_type* newBuffer = AllocAndMigrate(count);
+            value_type* newBuffer = _AllocAndMigrate(count);
             free(m_buffer);
             _InitializeDefaultValues(count, value, newBuffer);
 
@@ -78,7 +78,7 @@ public:
     {
         // XXX: How to elegantly clean up this code dupe?
         if (count > m_capacity) {
-            value_type* newBuffer = AllocAndMigrate(count);
+            value_type* newBuffer = _AllocAndMigrate(count);
 
             // Free old buffer.
             free(m_buffer);
@@ -90,7 +90,9 @@ public:
     };
 
 private:
-    value_type* AllocAndMigrate(size_t count)
+    // Allocate a new buffer which contains count elements then
+    // migrate data from existing buffer (if any).
+    value_type* _AllocAndMigrate(size_t count)
     {
         // Allocate a new buffer.
         value_type* newBuffer =
