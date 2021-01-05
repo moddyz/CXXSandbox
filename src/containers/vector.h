@@ -18,6 +18,22 @@ public:
     /// The value type of each element.
     using value_type = ValueT;
 
+    /// Constructs an empty vector.
+    Vector() {}
+
+    /// Destroys the vector.
+    ~Vector() {
+        if (m_buffer != nullptr) {
+            delete[] m_buffer;
+        }
+     }
+
+    /// Copy constructor.
+    Vector(const Vector& src) { _DeepCopyFrom(src); }
+
+    /// Copy assignment operator.
+    Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
+
     /// Get the number of elements in this vector.
     ///
     /// \return Number of elements.
@@ -37,12 +53,7 @@ public:
     {
         // No-op if specified count is less-than-or-equal current capacity.
         if (count > m_capacity) {
-            value_type* newBuffer = _AllocAndMigrate(count);
-            free(m_buffer);
-
-            // Update internal members.
-            m_buffer = newBuffer;
-            m_capacity = count;
+            _Realloc(count);
         }
 
         m_size = count;
@@ -55,17 +66,16 @@ public:
     /// \param value The default initialized value.
     void resize(size_t count, const value_type& value)
     {
-        // XXX: How to elegantly clean up this code dupe?
-
-        // No-op if specified count is less-than-or-equal current capacity.
         if (count > m_capacity) {
-            value_type* newBuffer = _AllocAndMigrate(count);
-            free(m_buffer);
-            _InitializeDefaultValues(count, value, newBuffer);
+            size_t oldSize = m_size;
+            _Realloc(count);
 
-            // Update internal members.
-            m_buffer = newBuffer;
-            m_capacity = count;
+            // Initialize default values.
+            if (m_size > oldSize) {
+                for (size_t index = oldSize; index < m_size; ++index) {
+                    m_buffer[index] = value;
+                }
+            }
         }
 
         m_size = count;
@@ -76,53 +86,49 @@ public:
     /// \param count Number of elements to update the capacity to.
     void reserve(size_t count)
     {
-        // XXX: How to elegantly clean up this code dupe?
         if (count > m_capacity) {
-            value_type* newBuffer = _AllocAndMigrate(count);
-
-            // Free old buffer.
-            free(m_buffer);
-
-            // Update internal members.
-            m_buffer = newBuffer;
-            m_capacity = count;
+            _Realloc(count);
         }
     };
 
-private:
-    // Allocate a new buffer which contains count elements then
-    // migrate data from existing buffer (if any).
-    value_type* _AllocAndMigrate(size_t count)
+    /// Clear all elements in the vector, including pre-allocated memory.
+    void clear()
     {
-        // Allocate a new buffer.
-        value_type* newBuffer =
-            static_cast<value_type*>(malloc(count * sizeof(value_type)));
-
-        // Perform data migration.
-        if (m_buffer != nullptr) {
-            size_t elementsToCopy;
-            if (elementsToCopy >= m_size) {
-                elementsToCopy = m_size;
-            } else {
-                elementsToCopy = count;
-            }
-
-            memcpy(newBuffer, m_buffer, elementsToCopy * sizeof(value_type));
-        }
-
-        return newBuffer;
+        m_size = 0;
     }
 
-    void _InitializeDefaultValues(size_t count,
-                                  const value_type& value,
-                                  value_type* newBuffer)
+private:
+    // Shared functionality for copying a source Vector to this one.
+    void _DeepCopyFrom(const Vector& src)
     {
-        if (count > m_size) {
-            size_t elementsToInit = count - m_size;
-            for (size_t index = m_size; index < count; ++index) {
-                newBuffer[index] = value;
-            }
+        _Realloc(src.m_capacity);
+        m_size = src.m_size;
+        if (m_size > 0) {
+            _CopyBuffer(src.m_buffer, src.m_size, m_buffer, m_size);
         }
+    }
+
+    // Reallocate a new buffer, replacing the old count.
+    void _Realloc(size_t count)
+    {
+        value_type* newBuffer = new value_type[count];
+        if (m_buffer != nullptr) {
+            _CopyBuffer(m_buffer, m_size, newBuffer, count);
+            delete[] m_buffer;
+        }
+        m_buffer = newBuffer;
+        m_capacity = count;
+    }
+
+    // Copy memory from srcBuffer to dstBuffer.
+    // Src and dst sizes are also provided as
+    static void _CopyBuffer(value_type* srcBuffer,
+                            size_t srcSize,
+                            value_type* dstBuffer,
+                            size_t dstSize)
+    {
+        size_t copyCount = std::min(srcSize, dstSize);
+        memcpy(dstBuffer, srcBuffer, copyCount * sizeof(value_type));
     }
 
     // Number of elements that this vector currently contains.
