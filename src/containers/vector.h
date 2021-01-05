@@ -22,11 +22,7 @@ public:
     Vector() {}
 
     /// Destroys the vector.
-    ~Vector() {
-        if (m_buffer != nullptr) {
-            delete[] m_buffer;
-        }
-     }
+    ~Vector() { _Reset(); }
 
     /// Copy constructor.
     Vector(const Vector& src) { _DeepCopyFrom(src); }
@@ -91,10 +87,17 @@ public:
         }
     };
 
-    /// Clear all elements in the vector, including pre-allocated memory.
-    void clear()
+    /// Clear all elements from the vector.
+    void clear() { m_size = 0; }
+
+    /// Clear un-used capacity allocated for this vector.
+    void shrink_to_fit()
     {
-        m_size = 0;
+        if (m_size == 0) {
+            _Reset();
+        } else if (m_size < m_capacity) {
+            _Realloc(m_size);
+        }
     }
 
 private:
@@ -129,6 +132,18 @@ private:
     {
         size_t copyCount = std::min(srcSize, dstSize);
         memcpy(dstBuffer, srcBuffer, copyCount * sizeof(value_type));
+    }
+
+    // Reset internal members to default state.  Memory will be freed.
+    void _Reset()
+    {
+        if (m_buffer != nullptr) {
+            delete[] m_buffer;
+            m_buffer = nullptr;
+        }
+
+        m_size = 0;
+        m_capacity = 0;
     }
 
     // Number of elements that this vector currently contains.

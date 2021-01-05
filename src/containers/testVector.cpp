@@ -79,3 +79,31 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_clear",
     REQUIRE(vec.size() == 0);
     REQUIRE(vec.capacity() == 10);
 }
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_shrink_to_fit",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           ElementTypes)
+{
+    TestType vec;
+    vec.shrink_to_fit();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() == 0);
+
+    vec.reserve(10);
+    CHECK(vec.size() == 0);
+    CHECK(vec.capacity() == 10);
+    vec.shrink_to_fit();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() == 0);
+
+    vec.resize(10);
+    CHECK(vec.size() == 10);
+    CHECK(vec.capacity() == 10);
+    vec.clear();
+    CHECK(vec.size() == 0);
+    CHECK(vec.capacity() == 10);
+    vec.shrink_to_fit();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() == 0);
+}
