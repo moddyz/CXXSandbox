@@ -114,10 +114,11 @@ private:
     // Reallocate a new buffer, replacing the old count.
     void _Realloc(size_t count)
     {
-        value_type* newBuffer = new value_type[count];
+        value_type* newBuffer =
+            static_cast<value_type*>(malloc(sizeof(value_type) * count));
         if (m_buffer != nullptr) {
             _CopyBuffer(m_buffer, m_size, newBuffer, count);
-            delete[] m_buffer;
+            delete m_buffer;
         }
         m_buffer = newBuffer;
         m_capacity = count;
@@ -138,7 +139,7 @@ private:
     void _Reset()
     {
         if (m_buffer != nullptr) {
-            delete[] m_buffer;
+            delete m_buffer;
             m_buffer = nullptr;
         }
 
