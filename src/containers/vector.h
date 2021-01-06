@@ -18,6 +18,10 @@ public:
     /// The value type of each element.
     using value_type = ValueT;
 
+    // -----------------------------------------------------------------------
+    /// \name Construction
+    // -----------------------------------------------------------------------
+
     /// Constructs an empty vector.
     Vector() {}
 
@@ -30,17 +34,53 @@ public:
     /// Copy assignment operator.
     Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
 
-    /// Get the number of elements in this vector.
+    // -----------------------------------------------------------------------
+    /// \name Capacity
+    // -----------------------------------------------------------------------
+
+    /// Check if the vector contains no elements.
+    ///
+    /// \retval true If the vector is empty.
+    /// \retval false Otherwise.
+    bool empty() const noexcept { return m_size == 0; }
+
+    /// Get the number of elements contained in this vector.
     ///
     /// \return Number of elements.
     size_t size() const { return m_size; }
 
-    /// Get the number of elements allocated by this vector,
-    /// which is also the maximum number of elements this vector
-    /// can hold without needing to resize.
+    /// Update the capacity of this vector.
+    ///
+    /// \param count Number of elements to update the capacity to.
+    void reserve(size_t count)
+    {
+        if (count > m_capacity) {
+            _Realloc(count);
+        }
+    };
+
+    /// Get the number of elements which can be contained in the current
+    /// allocation.
     ///
     /// \return Number of elements allocated.
     size_t capacity() const { return m_capacity; }
+
+    /// Clear un-used capacity allocated for this vector.
+    void shrink_to_fit()
+    {
+        if (m_size == 0) {
+            _Reset();
+        } else if (m_size < m_capacity) {
+            _Realloc(m_size);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    /// \name Modifiers
+    // -----------------------------------------------------------------------
+
+    /// Clear all elements from the vector.
+    void clear() { m_size = 0; }
 
     /// Resize the vector to contain \p count number of elements.
     ///
@@ -63,7 +103,10 @@ public:
     void resize(size_t count, const value_type& value)
     {
         if (count > m_capacity) {
+            // Cache the old size.
             size_t oldSize = m_size;
+
+            // Reallocate underlying buffer.
             _Realloc(count);
 
             // Initialize default values.
@@ -75,29 +118,6 @@ public:
         }
 
         m_size = count;
-    }
-
-    /// Update the capacity of this vector.
-    ///
-    /// \param count Number of elements to update the capacity to.
-    void reserve(size_t count)
-    {
-        if (count > m_capacity) {
-            _Realloc(count);
-        }
-    };
-
-    /// Clear all elements from the vector.
-    void clear() { m_size = 0; }
-
-    /// Clear un-used capacity allocated for this vector.
-    void shrink_to_fit()
-    {
-        if (m_size == 0) {
-            _Reset();
-        } else if (m_size < m_capacity) {
-            _Realloc(m_size);
-        }
     }
 
 private:

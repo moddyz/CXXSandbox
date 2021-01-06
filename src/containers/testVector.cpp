@@ -5,14 +5,9 @@
 static const char* s_templateProduct = "[template][product]";
 using ElementTypes = std::tuple<int, float>;
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_sizeOf",
-                           s_templateProduct,
-                           (std::vector, Vector),
-                           ElementTypes)
-{
-    TestType vec;
-    REQUIRE(sizeof(vec) > 0);
-}
+//
+// Construction
+//
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
                            s_templateProduct,
@@ -24,24 +19,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
     REQUIRE(vec.capacity() == 0);
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
-                           s_templateProduct,
-                           (std::vector, Vector),
-                           ElementTypes)
-{
-    TestType vec;
-    vec.resize(5);
-    REQUIRE(vec.size() == 5);
-    REQUIRE(vec.capacity() == 5);
-
-    vec.resize(10);
-    REQUIRE(vec.size() == 10);
-    REQUIRE(vec.capacity() == 10);
-
-    vec.resize(3);
-    REQUIRE(vec.size() == 3);
-    REQUIRE(vec.capacity() == 10);
-}
+//
+// Capacity
+//
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_reserve",
                            s_templateProduct,
@@ -58,24 +38,6 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_reserve",
     REQUIRE(vec.capacity() == 10);
 
     vec.reserve(5);
-    REQUIRE(vec.size() == 0);
-    REQUIRE(vec.capacity() == 10);
-}
-
-TEMPLATE_PRODUCT_TEST_CASE("Vector_clear",
-                           s_templateProduct,
-                           (std::vector, Vector),
-                           ElementTypes)
-{
-    TestType vec;
-    vec.clear();
-    REQUIRE(vec.size() == 0);
-    REQUIRE(vec.capacity() == 0);
-
-    vec.reserve(10);
-    CHECK(vec.size() == 0);
-    CHECK(vec.capacity() == 10);
-    vec.clear();
     REQUIRE(vec.size() == 0);
     REQUIRE(vec.capacity() == 10);
 }
@@ -106,4 +68,45 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_shrink_to_fit",
     vec.shrink_to_fit();
     REQUIRE(vec.size() == 0);
     REQUIRE(vec.capacity() == 0);
+}
+
+//
+// Modifiers
+//
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_clear",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           ElementTypes)
+{
+    TestType vec;
+    vec.clear();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() == 0);
+
+    vec.reserve(10);
+    CHECK(vec.size() == 0);
+    CHECK(vec.capacity() == 10);
+    vec.clear();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() == 10);
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           ElementTypes)
+{
+    TestType vec;
+    vec.resize(5);
+    REQUIRE(vec.size() == 5);
+    REQUIRE(vec.capacity() == 5);
+
+    vec.resize(10);
+    REQUIRE(vec.size() == 10);
+    REQUIRE(vec.capacity() == 10);
+
+    vec.resize(3);
+    REQUIRE(vec.size() == 3);
+    REQUIRE(vec.capacity() == 10);
 }
