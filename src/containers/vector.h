@@ -80,16 +80,33 @@ public:
     // -----------------------------------------------------------------------
 
     /// Clear all elements from the vector.
-    void clear() { m_size = 0; }
+    void clear()
+    {
+        for (size_t index = 0; index < m_size; ++index) {
+            m_buffer[index].~value_type();
+        }
+
+        m_size = 0;
+    }
 
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
     void resize(size_t count)
     {
-        // No-op if specified count is less-than-or-equal current capacity.
         if (count > m_capacity) {
             _Realloc(count);
+
+            // Call constructor on new elements.
+            if (count > m_size) {
+                for (size_t index = m_size; index < count; ++index) {
+                    new (m_buffer + index) value_type();
+                }
+            }
+        } else if (count < m_size) {
+            for (size_t index = count; index < m_size; ++index) {
+                m_buffer[index].~value_type();
+            }
         }
 
         m_size = count;
@@ -102,30 +119,56 @@ public:
     /// \param value The default initialized value.
     void resize(size_t count, const value_type& value)
     {
+        // XXX: How to fix this code dupe??
         if (count > m_capacity) {
-            // Cache the old size.
-            size_t oldSize = m_size;
-
-            // Reallocate underlying buffer.
             _Realloc(count);
 
             // Initialize default values.
-            if (m_size > oldSize) {
-                for (size_t index = oldSize; index < m_size; ++index) {
+            if (count > m_size) {
+                for (size_t index = m_size; index < count; ++index) {
                     m_buffer[index] = value;
                 }
+            }
+        } else if (count < m_size) {
+            for (size_t index = count; index < m_size; ++index) {
+                m_buffer[index].~value_type();
             }
         }
 
         m_size = count;
     }
 
+    // -----------------------------------------------------------------------
+    /// \name Access
+    // -----------------------------------------------------------------------
+
+    /// Constant, indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    const value_type& operator[](size_t index) const { return m_buffer[index]; }
+
+    /// Mutable, indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    value_type& operator[](size_t index) { return m_buffer[index]; }
+
 private:
     // Shared functionality for copying a source Vector to this one.
     void _DeepCopyFrom(const Vector& src)
     {
-        _Realloc(src.m_capacity);
+        // Increase capacity if required.
+        if (src.m_size > m_capacity) {
+            _Realloc(src.m_size);
+        }
+
+        // Update members.
         m_size = src.m_size;
+
+        // Copy over elements.
         if (m_size > 0) {
             _CopyBuffer(src.m_buffer, src.m_size, m_buffer, m_size);
         }
@@ -134,6 +177,7 @@ private:
     // Reallocate a new buffer, replacing the old count.
     void _Realloc(size_t count)
     {
+        // Allocate new buffer.
         value_type* newBuffer =
             static_cast<value_type*>(malloc(sizeof(value_type) * count));
         if (m_buffer != nullptr) {
@@ -158,6 +202,11 @@ private:
     // Reset internal members to default state.  Memory will be freed.
     void _Reset()
     {
+        // Call deconstructor on elements.
+        for (size_t index = 0; index < m_size; ++index) {
+            m_buffer[index].~value_type();
+        }
+
         if (m_buffer != nullptr) {
             delete m_buffer;
             m_buffer = nullptr;
