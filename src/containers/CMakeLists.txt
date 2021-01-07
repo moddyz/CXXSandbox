@@ -7,12 +7,3 @@ cpp_test(${DIR_NAME}_test
     CPPFILES
         ${TEST_CPPFILES}
 )
-
-if (BUILD_BENCHMARKING)
-    # Create a single benchmark target.
-    file(GLOB BENCHMARK_CPPFILES benchmark*.cpp)
-    cpp_test(${DIR_NAME}_benchmark
-        CPPFILES
-            ${BENCHMARK_CPPFILES}
-    )
-endif()
