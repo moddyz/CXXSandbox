@@ -31,7 +31,7 @@ public:
     /// \typedef const_reference
     ///
     /// The const reference to an element.
-    using reference = const value_type&;
+    using const_reference = const value_type&;
 
     // -----------------------------------------------------------------------
     /// \name Construction
@@ -58,14 +58,17 @@ public:
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const value_type& operator[](size_t index) const { return m_buffer[index]; }
+    const_reference operator[](size_t index) const
+    {
+        return m_buffer[index];
+    }
 
     /// Mutable, indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    value_type& operator[](size_t index) { return m_buffer[index]; }
+    reference operator[](size_t index) { return m_buffer[index]; }
 
     // -----------------------------------------------------------------------
     /// \name Capacity
@@ -116,10 +119,21 @@ public:
     void clear()
     {
         for (size_t index = 0; index < m_size; ++index) {
-            m_buffer[index].~value_type();
+            m_buffer[index].~ValueT();
         }
 
         m_size = 0;
+    }
+
+    /// Appends an element to the end of the container.
+    void push_back(const ValueT& value)
+    {
+        if (m_size == m_capacity) {
+            _Realloc(_NextCapacity(1));
+        }
+
+        m_buffer[m_size] = value;
+        m_size++;
     }
 
     /// Resize the vector to contain \p count number of elements.
@@ -133,12 +147,12 @@ public:
             // Call constructor on new elements.
             if (count > m_size) {
                 for (size_t index = m_size; index < count; ++index) {
-                    new (m_buffer + index) value_type();
+                    new (m_buffer + index) ValueT();
                 }
             }
         } else if (count < m_size) {
             for (size_t index = count; index < m_size; ++index) {
-                m_buffer[index].~value_type();
+                m_buffer[index].~ValueT();
             }
         }
 
@@ -150,7 +164,7 @@ public:
     ///
     /// \param count The number of elements.
     /// \param value The default initialized value.
-    void resize(size_t count, const value_type& value)
+    void resize(size_t count, const ValueT& value)
     {
         // XXX: How to fix this code dupe??
         if (count > m_capacity) {
@@ -164,7 +178,7 @@ public:
             }
         } else if (count < m_size) {
             for (size_t index = count; index < m_size; ++index) {
-                m_buffer[index].~value_type();
+                m_buffer[index].~ValueT();
             }
         }
 
@@ -172,6 +186,24 @@ public:
     }
 
 private:
+    // Computes a new capacity to accomodate \p count number of elements
+    // being inserted into this container.
+    size_t _NextCapacity(size_t count)
+    {
+        // Compute base capacity value.
+        size_t nextCapacity = m_capacity;
+        if (nextCapacity == 0) {
+            nextCapacity = 1;
+        }
+
+        // Increase by multipliers of 2 until it can accomodate the insertion.
+        while (count + m_size > nextCapacity) {
+            nextCapacity *= 2;
+        }
+
+        return nextCapacity;
+    }
+
     // Shared functionality for copying a source Vector to this one.
     void _DeepCopyFrom(const Vector& src)
     {
@@ -193,8 +225,8 @@ private:
     void _Realloc(size_t count)
     {
         // Allocate new buffer.
-        value_type* newBuffer =
-            static_cast<value_type*>(malloc(sizeof(value_type) * count));
+        ValueT* newBuffer =
+            static_cast<ValueT*>(malloc(sizeof(ValueT) * count));
         if (m_buffer != nullptr) {
             _CopyBuffer(m_buffer, m_size, newBuffer, count);
             delete m_buffer;
@@ -205,13 +237,13 @@ private:
 
     // Copy memory from srcBuffer to dstBuffer.
     // Src and dst sizes are also provided as
-    static void _CopyBuffer(value_type* srcBuffer,
+    static void _CopyBuffer(ValueT* srcBuffer,
                             size_t srcSize,
-                            value_type* dstBuffer,
+                            ValueT* dstBuffer,
                             size_t dstSize)
     {
         size_t copyCount = std::min(srcSize, dstSize);
-        memcpy(dstBuffer, srcBuffer, copyCount * sizeof(value_type));
+        memcpy(dstBuffer, srcBuffer, copyCount * sizeof(ValueT));
     }
 
     // Reset internal members to default state.  Memory will be freed.
@@ -219,7 +251,7 @@ private:
     {
         // Call deconstructor on elements.
         for (size_t index = 0; index < m_size; ++index) {
-            m_buffer[index].~value_type();
+            m_buffer[index].~ValueT();
         }
 
         if (m_buffer != nullptr) {
@@ -239,5 +271,5 @@ private:
     size_t m_capacity = 0;
 
     // Pointer to the block of memory.
-    value_type* m_buffer = nullptr;
+    ValueT* m_buffer = nullptr;
 };

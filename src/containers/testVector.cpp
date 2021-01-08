@@ -93,6 +93,26 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_clear",
     REQUIRE(vec.capacity() == 10);
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int, float))
+{
+    TestType vec;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec.push_back(4);
+    vec.push_back(5);
+
+    REQUIRE(vec.size() == 5);
+    REQUIRE(vec.capacity() > 5);
+
+    for (size_t i = 0; i < 5; ++i) {
+        REQUIRE(vec[i] == typename TestType::value_type(i + 1));
+    }
+}
+
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
                            s_templateProduct,
                            (std::vector, Vector),
