@@ -18,6 +18,21 @@ public:
     /// The value type of each element.
     using value_type = ValueT;
 
+    /// \typedef size_type
+    ///
+    /// The value type of the container size.
+    using size_type = size_t;
+
+    /// \typedef reference
+    ///
+    /// The mutable reference to an element.
+    using reference = value_type&;
+
+    /// \typedef const_reference
+    ///
+    /// The const reference to an element.
+    using reference = const value_type&;
+
     // -----------------------------------------------------------------------
     /// \name Construction
     // -----------------------------------------------------------------------
@@ -33,6 +48,24 @@ public:
 
     /// Copy assignment operator.
     Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
+
+    // -----------------------------------------------------------------------
+    /// \name Element access
+    // -----------------------------------------------------------------------
+
+    /// Constant, indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    const value_type& operator[](size_t index) const { return m_buffer[index]; }
+
+    /// Mutable, indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    value_type& operator[](size_t index) { return m_buffer[index]; }
 
     // -----------------------------------------------------------------------
     /// \name Capacity
@@ -137,24 +170,6 @@ public:
 
         m_size = count;
     }
-
-    // -----------------------------------------------------------------------
-    /// \name Access
-    // -----------------------------------------------------------------------
-
-    /// Constant, indexed element accessor.
-    ///
-    /// \param index The index of the element.
-    ///
-    /// \return The element.
-    const value_type& operator[](size_t index) const { return m_buffer[index]; }
-
-    /// Mutable, indexed element accessor.
-    ///
-    /// \param index The index of the element.
-    ///
-    /// \return The element.
-    value_type& operator[](size_t index) { return m_buffer[index]; }
 
 private:
     // Shared functionality for copying a source Vector to this one.
