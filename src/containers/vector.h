@@ -58,10 +58,7 @@ public:
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const_reference operator[](size_t index) const
-    {
-        return m_buffer[index];
-    }
+    const_reference operator[](size_t index) const { return m_buffer[index]; }
 
     /// Mutable, indexed element accessor.
     ///
