@@ -51,6 +51,23 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
 }
 
 //
+// Element access
+//
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_AssignmentOperator",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.resize(2);
+    vec[0] = "foo";
+    vec[1] = "bar";
+    REQUIRE(vec[0] == std::string("foo"));
+    REQUIRE(vec[1] == std::string("bar"));
+}
+
+//
 // Capacity
 //
 
