@@ -8,7 +8,7 @@ static const char* s_templateProduct = "[template][product]";
 // Construction
 //
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultConstructor",
                            s_templateProduct,
                            (std::vector, Vector),
                            (int, float, std::string))
@@ -16,6 +16,39 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
     TestType vec;
     REQUIRE(vec.size() == 0);
     REQUIRE(vec.capacity() == 0);
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_CountConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int, float, std::string))
+{
+    TestType vec(5);
+    REQUIRE(vec.size() == 5);
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultValueConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int, float))
+{
+    TestType vec(5, 5);
+    REQUIRE(vec.size() == 5);
+    for (size_t i = 0; i < 5; ++i) {
+        REQUIRE(vec[i] == 5);
+    }
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultValueConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec(5, "foo");
+    REQUIRE(vec.size() == 5);
+    for (size_t i = 0; i < 5; ++i) {
+        REQUIRE(vec[i] == typename TestType::value_type("foo"));
+    }
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyConstructor",
@@ -30,8 +63,8 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyConstructor",
     TestType vecB(vecA);
     REQUIRE(vecB.size() == vecA.size());
     REQUIRE(vecB.capacity() == vecA.capacity());
-    REQUIRE(vecB[0] == std::string("foo"));
-    REQUIRE(vecB[1] == std::string("bar"));
+    REQUIRE(vecB[0] == typename TestType::value_type("foo"));
+    REQUIRE(vecB[1] == typename TestType::value_type("bar"));
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
@@ -46,8 +79,8 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
     TestType vecB = vecA;
     REQUIRE(vecB.size() == vecA.size());
     REQUIRE(vecB.capacity() == vecA.capacity());
-    REQUIRE(vecB[0] == std::string("foo"));
-    REQUIRE(vecB[1] == std::string("bar"));
+    REQUIRE(vecB[0] == typename TestType::value_type("foo"));
+    REQUIRE(vecB[1] == typename TestType::value_type("bar"));
 }
 
 //
@@ -63,8 +96,8 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_AssignmentOperator",
     vec.resize(2);
     vec[0] = "foo";
     vec[1] = "bar";
-    REQUIRE(vec[0] == std::string("foo"));
-    REQUIRE(vec[1] == std::string("bar"));
+    REQUIRE(vec[0] == typename TestType::value_type("foo"));
+    REQUIRE(vec[1] == typename TestType::value_type("bar"));
 }
 
 //
@@ -175,9 +208,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
     REQUIRE(vec.size() == 3);
     REQUIRE(vec.capacity() > 3);
 
-    REQUIRE(vec[0] == std::string("Foo"));
-    REQUIRE(vec[1] == std::string("Bar"));
-    REQUIRE(vec[2] == std::string("Baz"));
+    REQUIRE(vec[0] == typename TestType::value_type("Foo"));
+    REQUIRE(vec[1] == typename TestType::value_type("Bar"));
+    REQUIRE(vec[2] == typename TestType::value_type("Baz"));
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",

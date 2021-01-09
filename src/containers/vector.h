@@ -40,6 +40,14 @@ public:
     /// Constructs an empty vector.
     Vector() {}
 
+    /// Constructs a vector with \p count number of elements.
+    ///
+    /// \param
+    Vector(size_t count, const value_type& value = ValueT())
+    {
+        resize(count, value);
+    }
+
     /// Destroys the vector.
     ~Vector() { _Reset(); }
 
