@@ -113,6 +113,24 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
     }
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back("Foo");
+    vec.push_back("Bar");
+    vec.push_back("Baz");
+
+    REQUIRE(vec.size() == 3);
+    REQUIRE(vec.capacity() > 3);
+
+    REQUIRE(vec[0] == std::string("Foo"));
+    REQUIRE(vec[1] == std::string("Bar"));
+    REQUIRE(vec[2] == std::string("Baz"));
+}
+
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
                            s_templateProduct,
                            (std::vector, Vector),

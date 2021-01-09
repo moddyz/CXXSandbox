@@ -123,13 +123,42 @@ public:
     }
 
     /// Appends an element to the end of the container.
+    ///
+    /// \param value The element value.
     void push_back(const ValueT& value)
     {
+        // Allocate more memory if required.
         if (m_size == m_capacity) {
             _Realloc(_NextCapacity(1));
         }
 
+        // Initialize the element at the end.
+        new (m_buffer + m_size) ValueT();
+
+        // Copy value into element at end.
         m_buffer[m_size] = value;
+
+        // Increase size by 1.
+        m_size++;
+    }
+
+    /// Appends an element to the end of the container by moving the element.
+    ///
+    /// \param value The element value.
+    void push_back(ValueT&& value)
+    {
+        // Allocate more memory if required.
+        if (m_size == m_capacity) {
+            _Realloc(_NextCapacity(1));
+        }
+
+        // Initialize the element at the end.
+        new (m_buffer + m_size) ValueT();
+
+        // Move value into buffer.
+        m_buffer[m_size] = std::move(value);
+
+        // Increase size by 1.
         m_size++;
     }
 
@@ -218,29 +247,51 @@ private:
         }
     }
 
-    // Reallocate a new buffer, replacing the old count.
+    // Create a new allocation to contain \p count elements.
+    // If this vector had existing elements, they will be migrated
+    // into the newly allocated buffer.
+    // The old elements are deconstructed and their buffer destroyed.
     void _Realloc(size_t count)
     {
-        // Allocate new buffer.
+        // Create a new allocation.
         ValueT* newBuffer =
             static_cast<ValueT*>(malloc(sizeof(ValueT) * count));
+
         if (m_buffer != nullptr) {
+            // Construct existing elements in new buffer.
+            for (size_t index = 0; index < m_size; ++index) {
+                new (newBuffer + index) ValueT();
+            }
+
+            // Copy elements into new buffer.
             _CopyBuffer(m_buffer, m_size, newBuffer, count);
-            delete m_buffer;
+
+            // De-construct elements in old buffer.
+            for (size_t index = 0; index < m_size; ++index) {
+                m_buffer[index].~ValueT();
+            }
+
+            // Free allocation.
+            free(m_buffer);
         }
+
+        // Assign new buffer ptr.
         m_buffer = newBuffer;
+
+        // Update allocation size.
         m_capacity = count;
     }
 
-    // Copy memory from srcBuffer to dstBuffer.
-    // Src and dst sizes are also provided as
+    // Copy elements from one buffer to another.
     static void _CopyBuffer(ValueT* srcBuffer,
                             size_t srcSize,
                             ValueT* dstBuffer,
                             size_t dstSize)
     {
         size_t copyCount = std::min(srcSize, dstSize);
-        memcpy(dstBuffer, srcBuffer, copyCount * sizeof(ValueT));
+        for (size_t i = 0; i < copyCount; ++i) {
+            dstBuffer[i] = srcBuffer[i];
+        }
     }
 
     // Reset internal members to default state.  Memory will be freed.
@@ -252,7 +303,7 @@ private:
         }
 
         if (m_buffer != nullptr) {
-            delete m_buffer;
+            free(m_buffer);
             m_buffer = nullptr;
         }
 
