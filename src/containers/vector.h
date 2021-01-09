@@ -43,13 +43,13 @@ public:
     /// Constructs a vector with \p count number of elements.
     ///
     /// \param count The number of elements.
-    Vector(size_t count) { resize(count); }
+    explicit Vector(size_t count) { resize(count); }
 
     /// Constructs a vector with \p count number of elements initialized to \p value.
     ///
     /// \param count The number of elements.
     /// \param value The default value initialized for each element.
-    Vector(size_t count, const value_type& value) { resize(count, value); }
+    explicit Vector(size_t count, const value_type& value) { resize(count, value); }
 
     /// Destroys the vector.
     ~Vector() { _Reset(); }
