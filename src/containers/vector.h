@@ -44,12 +44,18 @@ public:
     ~Vector() { _Reset(); }
 
     /// Copy constructor.
+    ///
+    /// \param src The source vector to copy contents from.
     Vector(const Vector& src) { _DeepCopyFrom(src); }
 
-    /// Copy assignment operator.
+    /// Copy assignment constructor.
+    ///
+    /// \param src The source vector to copy contents from.
     Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
 
     /// Move constructor.
+    ///
+    /// \param src The source vector to move resource ownership from.
     Vector(Vector&& src) { src.swap(*this); }
 
     // -----------------------------------------------------------------------
