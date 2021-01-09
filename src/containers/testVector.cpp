@@ -18,6 +18,22 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
     REQUIRE(vec.capacity() == 0);
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vecA;
+    vecA.push_back("foo");
+    vecA.push_back("bar");
+
+    TestType vecB(vecA);
+    REQUIRE(vecB.size() == vecA.size());
+    REQUIRE(vecB.capacity() == vecA.capacity());
+    REQUIRE(vecB[0] == std::string("foo"));
+    REQUIRE(vecB[1] == std::string("bar"));
+}
+
 //
 // Capacity
 //

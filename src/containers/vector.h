@@ -172,12 +172,12 @@ public:
     {
         if (count > m_capacity) {
             _Realloc(count);
+        }
 
-            // Call constructor on new elements.
-            if (count > m_size) {
-                for (size_t index = m_size; index < count; ++index) {
-                    new (m_buffer + index) ValueT();
-                }
+        // Call constructor on new elements.
+        if (count > m_size) {
+            for (size_t index = m_size; index < count; ++index) {
+                new (m_buffer + index) ValueT();
             }
         } else if (count < m_size) {
             for (size_t index = count; index < m_size; ++index) {
@@ -198,12 +198,16 @@ public:
         // XXX: How to fix this code dupe??
         if (count > m_capacity) {
             _Realloc(count);
+        }
 
-            // Initialize default values.
-            if (count > m_size) {
-                for (size_t index = m_size; index < count; ++index) {
-                    m_buffer[index] = value;
-                }
+        // Initialize default values.
+        if (count > m_size) {
+            for (size_t index = m_size; index < count; ++index) {
+                new (m_buffer + index) ValueT();
+            }
+
+            for (size_t index = m_size; index < count; ++index) {
+                m_buffer[index] = value;
             }
         } else if (count < m_size) {
             for (size_t index = count; index < m_size; ++index) {
@@ -256,6 +260,11 @@ private:
 
         // Copy over elements.
         if (m_size > 0) {
+            // Construct existing elements in new buffer.
+            for (size_t index = 0; index < m_size; ++index) {
+                new (m_buffer + index) ValueT();
+            }
+
             _CopyBuffer(src.m_buffer, src.m_size, m_buffer, m_size);
         }
     }
