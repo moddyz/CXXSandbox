@@ -325,18 +325,19 @@ private:
     // Reset internal members to default state.  Memory will be freed.
     void _Reset()
     {
-        // Call deconstructor on elements.
-        for (size_t index = 0; index < m_size; ++index) {
-            m_buffer[index].~ValueT();
-        }
-
         if (m_buffer != nullptr) {
-            free(m_buffer);
-            m_buffer = nullptr;
-        }
+            // Call deconstructor on elements.
+            for (size_t index = 0; index < m_size; ++index) {
+                m_buffer[index].~ValueT();
+            }
 
-        m_size = 0;
-        m_capacity = 0;
+            // Free buffer.
+            free(m_buffer);
+
+            m_buffer = nullptr;
+            m_size = 0;
+            m_capacity = 0;
+        }
     }
 
     // Number of elements that this vector currently contains.
