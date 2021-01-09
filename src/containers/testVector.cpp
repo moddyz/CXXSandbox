@@ -11,7 +11,7 @@ static const char* s_templateProduct = "[template][product]";
 TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
                            s_templateProduct,
                            (std::vector, Vector),
-                           (int, float))
+                           (int, float, std::string))
 {
     TestType vec;
     REQUIRE(vec.size() == 0);
@@ -25,7 +25,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_defaultConstructor",
 TEMPLATE_PRODUCT_TEST_CASE("Vector_reserve",
                            s_templateProduct,
                            (std::vector, Vector),
-                           (int, float))
+                           (int, float, std::string))
 {
     TestType vec;
     vec.reserve(5);
@@ -44,7 +44,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_reserve",
 TEMPLATE_PRODUCT_TEST_CASE("Vector_shrink_to_fit",
                            s_templateProduct,
                            (std::vector, Vector),
-                           (int, float))
+                           (int, float, std::string))
 {
     TestType vec;
     vec.shrink_to_fit();
@@ -78,7 +78,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_shrink_to_fit",
 TEMPLATE_PRODUCT_TEST_CASE("Vector_clear",
                            s_templateProduct,
                            (std::vector, Vector),
-                           (int, float))
+                           (int, float, std::string))
 {
     TestType vec;
     vec.clear();
@@ -134,7 +134,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
                            s_templateProduct,
                            (std::vector, Vector),
-                           (int, float))
+                           (int, float, std::string))
 {
     TestType vec;
     vec.resize(5);
@@ -157,4 +157,39 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
     for (size_t i = 0; i < 3; ++i) {
         REQUIRE(vec[i] == typename TestType::value_type());
     }
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_swap",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int, float))
+{
+    // Create vecA.
+    TestType vecA;
+    vecA.push_back(1);
+    vecA.push_back(2);
+    vecA.push_back(3);
+    size_t originalCapacityA = vecA.capacity();
+
+    // Create vecB.
+    TestType vecB;
+    vecB.push_back(4);
+    vecB.push_back(5);
+    size_t originalCapacityB = vecB.capacity();
+
+    // Swap the vectors.
+    vecA.swap(vecB);
+
+    // Check vecA members.
+    REQUIRE(vecA.size() == 2);
+    REQUIRE(vecA.capacity() == originalCapacityB);
+    REQUIRE(vecA[0] == 4);
+    REQUIRE(vecA[1] == 5);
+
+    // Check vecB members.
+    REQUIRE(vecB.size() == 3);
+    REQUIRE(vecB.capacity() == originalCapacityA);
+    REQUIRE(vecB[0] == 1);
+    REQUIRE(vecB[1] == 2);
+    REQUIRE(vecB[2] == 3);
 }

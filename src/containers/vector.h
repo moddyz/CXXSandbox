@@ -49,23 +49,26 @@ public:
     /// Copy assignment operator.
     Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
 
+    /// Move constructor.
+    Vector(Vector&& src) { src.swap(*this); }
+
     // -----------------------------------------------------------------------
     /// \name Element access
     // -----------------------------------------------------------------------
 
-    /// Constant, indexed element accessor.
+    /// Constant indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const_reference operator[](size_t index) const { return m_buffer[index]; }
+    const ValueT& operator[](size_t index) const { return m_buffer[index]; }
 
-    /// Mutable, indexed element accessor.
+    /// Mutable indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    reference operator[](size_t index) { return m_buffer[index]; }
+    ValueT& operator[](size_t index) { return m_buffer[index]; }
 
     // -----------------------------------------------------------------------
     /// \name Capacity
@@ -211,9 +214,19 @@ public:
         m_size = count;
     }
 
+    /// Swaps the contents with the \p other vector.
+    ///
+    /// \param other The other vector.
+    void swap(Vector& other) noexcept
+    {
+        std::swap(m_capacity, other.m_capacity);
+        std::swap(m_size, other.m_size);
+        std::swap(m_buffer, other.m_buffer);
+    }
+
 private:
-    // Computes a new capacity to accomodate \p count number of elements
-    // being inserted into this container.
+    // Computes a new capacity to contain an additional \p conut number of
+    // elements being inserted into this container.
     size_t _NextCapacity(size_t count)
     {
         // Compute base capacity value.
