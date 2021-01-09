@@ -83,6 +83,25 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
     REQUIRE(vecB[1] == typename TestType::value_type("bar"));
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_InitializerListConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec = {
+        std::string("foo"),
+        std::string("bar"),
+        std::string("baz"),
+        std::string("qux"),
+    };
+
+    REQUIRE(vec.size() == 4);
+    REQUIRE(vec[0] == typename TestType::value_type("foo"));
+    REQUIRE(vec[1] == typename TestType::value_type("bar"));
+    REQUIRE(vec[2] == typename TestType::value_type("baz"));
+    REQUIRE(vec[3] == typename TestType::value_type("qux"));
+}
+
 //
 // Element access
 //

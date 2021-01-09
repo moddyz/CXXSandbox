@@ -45,11 +45,15 @@ public:
     /// \param count The number of elements.
     explicit Vector(size_t count) { resize(count); }
 
-    /// Constructs a vector with \p count number of elements initialized to \p value.
+    /// Constructs a vector with \p count number of elements initialized to \p
+    /// value.
     ///
     /// \param count The number of elements.
     /// \param value The default value initialized for each element.
-    explicit Vector(size_t count, const value_type& value) { resize(count, value); }
+    explicit Vector(size_t count, const value_type& value)
+    {
+        resize(count, value);
+    }
 
     /// Destroys the vector.
     ~Vector() { _Reset(); }
@@ -57,17 +61,22 @@ public:
     /// Copy constructor.
     ///
     /// \param src The source vector to copy contents from.
-    Vector(const Vector& src) { _DeepCopyFrom(src); }
+    Vector(const Vector& src) { _CopyFrom(src); }
 
     /// Copy assignment constructor.
     ///
     /// \param src The source vector to copy contents from.
-    Vector& operator=(const Vector& src) { _DeepCopyFrom(src); }
+    Vector& operator=(const Vector& src) { _CopyFrom(src); }
 
     /// Move constructor.
     ///
     /// \param src The source vector to move resource ownership from.
-    Vector(Vector&& src) { src.swap(*this); }
+    Vector(Vector&& src) noexcept { src.swap(*this); }
+
+    /// Initializer-list constructor.
+    ///
+    /// \param src The source initializer list.
+    Vector(std::initializer_list<ValueT> src) { _CopyFromInitList(src); }
 
     // -----------------------------------------------------------------------
     /// \name Element access
@@ -265,7 +274,7 @@ private:
     }
 
     // Shared functionality for copying a source Vector to this one.
-    void _DeepCopyFrom(const Vector& src)
+    void _CopyFrom(const Vector& src)
     {
         // Increase capacity if required.
         if (src.m_size > m_capacity) {
@@ -283,6 +292,31 @@ private:
             }
 
             _CopyBuffer(src.m_buffer, src.m_size, m_buffer, m_size);
+        }
+    }
+
+    // Shared functionality for copying a source Vector to this one.
+    void _CopyFromInitList(const std::initializer_list<ValueT>& src)
+    {
+        // Increase capacity if required.
+        if (src.size() > m_capacity) {
+            _Realloc(src.size());
+        }
+
+        // Update members.
+        m_size = src.size();
+
+        // Copy over elements.
+        if (m_size > 0) {
+            // Construct existing elements in new buffer.
+            for (size_t index = 0; index < m_size; ++index) {
+                new (m_buffer + index) ValueT();
+            }
+
+            size_t index = 0;
+            for (auto it = src.begin(); it != src.end(); ++it, ++index) {
+                m_buffer[index] = *it;
+            }
         }
     }
 
