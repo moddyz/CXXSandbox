@@ -122,6 +122,25 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_InitializerListAssignmentOperator",
     REQUIRE(vec[3] == typename TestType::value_type("qux"));
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_assign",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int))
+{
+    TestType vec;
+    vec.resize(5, 1);
+    CHECK(vec.size() == 5);
+    for (size_t i = 0; i < 5; ++i) {
+        REQUIRE(vec[i] == 1);
+    }
+
+    vec.assign(3, 2);
+    CHECK(vec.size() == 3);
+    for (size_t i = 0; i < 3; ++i) {
+        REQUIRE(vec[i] == 2);
+    }
+}
+
 //
 // Element access
 //

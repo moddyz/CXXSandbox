@@ -103,7 +103,14 @@ public:
     /// Replaces element values in this container.
     ///
     /// \param src The source vector to copy contents from.
-    void assign(size_t count, const ValueT& value) {}
+    void assign(size_t count, const ValueT& value)
+    {
+        _ResizeOps(count, _NoOp, [&](void) {
+            for (size_t index = 0; index < count; ++index) {
+                m_buffer[index] = value;
+            }
+        });
+    }
 
     // -----------------------------------------------------------------------
     /// \name Element access
@@ -221,7 +228,7 @@ public:
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
-    void resize(size_t count) { _ResizeWithOp(count, _NoOp, _NoOp); }
+    void resize(size_t count) { _ResizeOps(count, _NoOp, _NoOp); }
 
     /// Resize the vector to contain \p count number of elements, appending
     /// default-initialized \p value when the vector increases in size.
@@ -230,7 +237,7 @@ public:
     /// \param value The default initialized value.
     void resize(size_t count, const ValueT& value)
     {
-        _ResizeWithOp(
+        _ResizeOps(
             count,
             [&](void) {
                 for (size_t index = m_size; index < count; ++index) {
@@ -271,10 +278,13 @@ private:
         return nextCapacity;
     }
 
+    // Procedure for performing a resize, then an operation against newly
+    // initialized elements, as well as another operation against all elements.
+    // This reduces the logic duplication of callers.
     template<typename NewElementsOp, typename AllElementsOp>
-    void _ResizeWithOp(size_t count,
-                       NewElementsOp newElementsOp,
-                       AllElementsOp allElementsOp)
+    void _ResizeOps(size_t count,
+                    NewElementsOp newElementsOp,
+                    AllElementsOp allElementsOp)
     {
         if (count > m_capacity) {
             _Realloc(count);
@@ -301,7 +311,7 @@ private:
     // Shared functionality for copying a source Vector to this one.
     void _CopyFrom(const Vector& src)
     {
-        _ResizeWithOp(src.m_size, _NoOp, [&](void) {
+        _ResizeOps(src.m_size, _NoOp, [&](void) {
             _CopyBuffer(src.m_buffer, src.m_size, m_buffer, src.m_size);
         });
     }
@@ -309,7 +319,7 @@ private:
     // Shared functionality for copying a source Vector to this one.
     void _CopyFromInitList(const std::initializer_list<ValueT>& src)
     {
-        _ResizeWithOp(src.size(), _NoOp, [&](void) {
+        _ResizeOps(src.size(), _NoOp, [&](void) {
             size_t index = 0;
             for (auto it = src.begin(); it != src.end(); ++it, ++index) {
                 m_buffer[index] = *it;
