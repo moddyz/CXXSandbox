@@ -63,11 +63,6 @@ public:
     /// \param src The source vector to copy contents from.
     Vector(const Vector& src) { _CopyFrom(src); }
 
-    /// Copy assignment constructor.
-    ///
-    /// \param src The source vector to copy contents from.
-    Vector& operator=(const Vector& src) { _CopyFrom(src); }
-
     /// Move constructor.
     ///
     /// \param src The source vector to move resource ownership from.
@@ -77,6 +72,33 @@ public:
     ///
     /// \param src The source initializer list.
     Vector(std::initializer_list<ValueT> src) { _CopyFromInitList(src); }
+
+    /// Copy assignment operator.
+    ///
+    /// \param src The source vector to copy contents from.
+    Vector& operator=(const Vector& src)
+    {
+        _CopyFrom(src);
+        return *this;
+    }
+
+    /// Move assignment operator.
+    ///
+    /// \param src The source vector to move resource ownership from.
+    Vector& operator=(Vector&& src) noexcept
+    {
+        src.swap(*this);
+        return *this;
+    }
+
+    /// Initializer list assignment operator.
+    ///
+    /// \param src The source vector to move resource ownership from.
+    Vector& operator=(std::initializer_list<ValueT> src) noexcept
+    {
+        _CopyFromInitList(src);
+        return *this;
+    }
 
     // -----------------------------------------------------------------------
     /// \name Element access

@@ -18,7 +18,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultConstructor",
     REQUIRE(vec.capacity() == 0);
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_CountConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_SizeConstructor",
                            s_templateProduct,
                            (std::vector, Vector),
                            (int, float, std::string))
@@ -27,7 +27,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CountConstructor",
     REQUIRE(vec.size() == 5);
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultValueConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_SizeAndDefaultValueConstructor",
                            s_templateProduct,
                            (std::vector, Vector),
                            (int, float))
@@ -39,7 +39,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultValueConstructor",
     }
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_DefaultValueConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_SizeAndDefaultValueConstructor",
                            s_templateProduct,
                            (std::vector, Vector),
                            (std::string))
@@ -67,7 +67,26 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyConstructor",
     REQUIRE(vecB[1] == typename TestType::value_type("bar"));
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_InitializerListConstructor",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec{
+        std::string("foo"),
+        std::string("bar"),
+        std::string("baz"),
+        std::string("qux"),
+    };
+
+    REQUIRE(vec.size() == 4);
+    REQUIRE(vec[0] == typename TestType::value_type("foo"));
+    REQUIRE(vec[1] == typename TestType::value_type("bar"));
+    REQUIRE(vec[2] == typename TestType::value_type("baz"));
+    REQUIRE(vec[3] == typename TestType::value_type("qux"));
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentOperator",
                            s_templateProduct,
                            (std::vector, Vector),
                            (std::string))
@@ -83,12 +102,13 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_CopyAssignmentConstructor",
     REQUIRE(vecB[1] == typename TestType::value_type("bar"));
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_InitializerListConstructor",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_InitializerListAssignmentOperator",
                            s_templateProduct,
                            (std::vector, Vector),
                            (std::string))
 {
-    TestType vec = {
+    TestType vec;
+    vec = {
         std::string("foo"),
         std::string("bar"),
         std::string("baz"),
