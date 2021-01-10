@@ -93,7 +93,7 @@ public:
 
     /// Initializer list assignment operator.
     ///
-    /// \param src The source vector to move resource ownership from.
+    /// \param src The source initializer list to copy contents from.
     Vector& operator=(std::initializer_list<ValueT> src) noexcept
     {
         _CopyFromInitList(src);
@@ -110,6 +110,14 @@ public:
                 m_buffer[index] = value;
             }
         });
+    }
+
+    /// Replaces elements in this container with an initializer list.
+    ///
+    /// \param src The source initializer list to copy contents from.
+    void assign(std::initializer_list<ValueT> src)
+    {
+        _CopyFromInitList(src);
     }
 
     // -----------------------------------------------------------------------
