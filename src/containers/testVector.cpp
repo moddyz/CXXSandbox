@@ -178,6 +178,19 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_AssignmentOperator",
     REQUIRE(vec[1] == typename TestType::value_type("bar"));
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_at",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.resize(2);
+    vec.at(0) = "foo";
+    vec.at(1) = "bar";
+    REQUIRE(vec.at(0) == typename TestType::value_type("foo"));
+    REQUIRE(vec.at(1) == typename TestType::value_type("bar"));
+}
+
 //
 // Capacity
 //

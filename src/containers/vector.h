@@ -138,6 +138,20 @@ public:
     /// \return The element.
     ValueT& operator[](size_t index) { return m_buffer[index]; }
 
+    /// Constant indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    const ValueT& at(size_t index) const { return m_buffer[index]; }
+
+    /// Mutable indexed element accessor.
+    ///
+    /// \param index The index of the element.
+    ///
+    /// \return The element.
+    ValueT& at(size_t index) { return m_buffer[index]; }
+
     // -----------------------------------------------------------------------
     /// \name Capacity
     // -----------------------------------------------------------------------
