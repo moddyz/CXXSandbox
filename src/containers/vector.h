@@ -115,10 +115,7 @@ public:
     /// Replaces elements in this container with an initializer list.
     ///
     /// \param src The source initializer list to copy contents from.
-    void assign(std::initializer_list<ValueT> src)
-    {
-        _CopyFromInitList(src);
-    }
+    void assign(std::initializer_list<ValueT> src) { _CopyFromInitList(src); }
 
     // -----------------------------------------------------------------------
     /// \name Element access
