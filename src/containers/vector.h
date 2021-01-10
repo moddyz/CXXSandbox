@@ -100,6 +100,11 @@ public:
         return *this;
     }
 
+    /// Replaces element values in this container.
+    ///
+    /// \param src The source vector to copy contents from.
+    void assign(size_t count, const ValueT& value) {}
+
     // -----------------------------------------------------------------------
     /// \name Element access
     // -----------------------------------------------------------------------
@@ -216,25 +221,7 @@ public:
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
-    void resize(size_t count)
-    {
-        if (count > m_capacity) {
-            _Realloc(count);
-        }
-
-        // Call constructor on new elements.
-        if (count > m_size) {
-            for (size_t index = m_size; index < count; ++index) {
-                new (m_buffer + index) ValueT();
-            }
-        } else if (count < m_size) {
-            for (size_t index = count; index < m_size; ++index) {
-                m_buffer[index].~ValueT();
-            }
-        }
-
-        m_size = count;
-    }
+    void resize(size_t count) { _ResizeWithOp(count, _NoOp, _NoOp); }
 
     /// Resize the vector to contain \p count number of elements, appending
     /// default-initialized \p value when the vector increases in size.
@@ -243,27 +230,14 @@ public:
     /// \param value The default initialized value.
     void resize(size_t count, const ValueT& value)
     {
-        // XXX: How to fix this code dupe??
-        if (count > m_capacity) {
-            _Realloc(count);
-        }
-
-        // Initialize default values.
-        if (count > m_size) {
-            for (size_t index = m_size; index < count; ++index) {
-                new (m_buffer + index) ValueT();
-            }
-
-            for (size_t index = m_size; index < count; ++index) {
-                m_buffer[index] = value;
-            }
-        } else if (count < m_size) {
-            for (size_t index = count; index < m_size; ++index) {
-                m_buffer[index].~ValueT();
-            }
-        }
-
-        m_size = count;
+        _ResizeWithOp(
+            count,
+            [&](void) {
+                for (size_t index = m_size; index < count; ++index) {
+                    m_buffer[index] = value;
+                }
+            },
+            _NoOp);
     }
 
     /// Swaps the contents with the \p other vector.
@@ -277,7 +251,9 @@ public:
     }
 
 private:
-    // Computes a new capacity to contain an additional \p conut number of
+    static void _NoOp() {}
+
+    // Computes a new capacity to contain an additional \p count number of
     // elements being inserted into this container.
     size_t _NextCapacity(size_t count)
     {
@@ -295,51 +271,50 @@ private:
         return nextCapacity;
     }
 
-    // Shared functionality for copying a source Vector to this one.
-    void _CopyFrom(const Vector& src)
+    template<typename NewElementsOp, typename AllElementsOp>
+    void _ResizeWithOp(size_t count,
+                       NewElementsOp newElementsOp,
+                       AllElementsOp allElementsOp)
     {
-        // Increase capacity if required.
-        if (src.m_size > m_capacity) {
-            _Realloc(src.m_size);
+        if (count > m_capacity) {
+            _Realloc(count);
         }
 
-        // Update members.
-        m_size = src.m_size;
-
-        // Copy over elements.
-        if (m_size > 0) {
-            // Construct existing elements in new buffer.
-            for (size_t index = 0; index < m_size; ++index) {
+        // Call constructor on new elements.
+        if (count > m_size) {
+            for (size_t index = m_size; index < count; ++index) {
                 new (m_buffer + index) ValueT();
             }
 
-            _CopyBuffer(src.m_buffer, src.m_size, m_buffer, m_size);
+            newElementsOp();
+        } else if (count < m_size) {
+            for (size_t index = count; index < m_size; ++index) {
+                m_buffer[index].~ValueT();
+            }
         }
+
+        allElementsOp();
+
+        m_size = count;
+    }
+
+    // Shared functionality for copying a source Vector to this one.
+    void _CopyFrom(const Vector& src)
+    {
+        _ResizeWithOp(src.m_size, _NoOp, [&](void) {
+            _CopyBuffer(src.m_buffer, src.m_size, m_buffer, src.m_size);
+        });
     }
 
     // Shared functionality for copying a source Vector to this one.
     void _CopyFromInitList(const std::initializer_list<ValueT>& src)
     {
-        // Increase capacity if required.
-        if (src.size() > m_capacity) {
-            _Realloc(src.size());
-        }
-
-        // Update members.
-        m_size = src.size();
-
-        // Copy over elements.
-        if (m_size > 0) {
-            // Construct existing elements in new buffer.
-            for (size_t index = 0; index < m_size; ++index) {
-                new (m_buffer + index) ValueT();
-            }
-
+        _ResizeWithOp(src.size(), _NoOp, [&](void) {
             size_t index = 0;
             for (auto it = src.begin(); it != src.end(); ++it, ++index) {
                 m_buffer[index] = *it;
             }
-        }
+        });
     }
 
     // Create a new allocation to contain \p count elements.
@@ -414,6 +389,6 @@ private:
     // without needing to resize.
     size_t m_capacity = 0;
 
-    // Pointer to the block of memory.
+    // Pointer to the allocated buffer.
     ValueT* m_buffer = nullptr;
 };
