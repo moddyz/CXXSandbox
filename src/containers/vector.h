@@ -286,23 +286,27 @@ private:
                     NewElementsOp newElementsOp,
                     AllElementsOp allElementsOp)
     {
+        // Perform buffer re-allocation if required.
         if (count > m_capacity) {
             _Realloc(count);
         }
 
-        // Call constructor on new elements.
         if (count > m_size) {
+            // Call constructor on new, un-initialized elements.
             for (size_t index = m_size; index < count; ++index) {
                 new (m_buffer + index) ValueT();
             }
 
+            // Run caller-specified operation on new elements.
             newElementsOp();
         } else if (count < m_size) {
+            // Run de-constructor on elements removed due to down-sizing.
             for (size_t index = count; index < m_size; ++index) {
                 m_buffer[index].~ValueT();
             }
         }
 
+        // Perform an operation on all the elements.
         allElementsOp();
 
         m_size = count;
@@ -338,12 +342,12 @@ private:
             static_cast<ValueT*>(malloc(sizeof(ValueT) * count));
 
         if (m_buffer != nullptr) {
-            // Construct existing elements in new buffer.
+            // Perform initialization on existing elements (in new buffer).
             for (size_t index = 0; index < m_size; ++index) {
                 new (newBuffer + index) ValueT();
             }
 
-            // Copy elements into new buffer.
+            // Copy existing elements into new buffer.
             _CopyBuffer(m_buffer, m_size, newBuffer, count);
 
             // De-construct elements in old buffer.
@@ -351,7 +355,7 @@ private:
                 m_buffer[index].~ValueT();
             }
 
-            // Free allocation.
+            // Free old allocation.
             free(m_buffer);
         }
 
