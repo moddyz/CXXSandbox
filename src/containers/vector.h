@@ -23,16 +23,6 @@ public:
     /// The value type of the container size.
     using size_type = size_t;
 
-    /// \typedef reference
-    ///
-    /// The mutable reference to an element.
-    using reference = value_type&;
-
-    /// \typedef const_reference
-    ///
-    /// The const reference to an element.
-    using const_reference = const value_type&;
-
     // -----------------------------------------------------------------------
     /// \name Construction
     // -----------------------------------------------------------------------
@@ -43,14 +33,14 @@ public:
     /// Constructs a vector with \p count number of elements.
     ///
     /// \param count The number of elements.
-    explicit Vector(size_t count) { resize(count); }
+    explicit Vector(size_type count) { resize(count); }
 
     /// Constructs a vector with \p count number of elements initialized to \p
     /// value.
     ///
     /// \param count The number of elements.
     /// \param value The default value initialized for each element.
-    explicit Vector(size_t count, const value_type& value)
+    explicit Vector(size_type count, const value_type& value)
     {
         resize(count, value);
     }
@@ -71,7 +61,7 @@ public:
     /// Initializer-list constructor.
     ///
     /// \param src The source initializer list.
-    Vector(std::initializer_list<ValueT> src) { _CopyFromInitList(src); }
+    Vector(std::initializer_list<value_type> src) { _CopyFromInitList(src); }
 
     /// Copy assignment operator.
     ///
@@ -94,7 +84,7 @@ public:
     /// Initializer list assignment operator.
     ///
     /// \param src The source initializer list to copy contents from.
-    Vector& operator=(std::initializer_list<ValueT> src) noexcept
+    Vector& operator=(std::initializer_list<value_type> src) noexcept
     {
         _CopyFromInitList(src);
         return *this;
@@ -103,10 +93,10 @@ public:
     /// Replaces element values in this container.
     ///
     /// \param src The source vector to copy contents from.
-    void assign(size_t count, const ValueT& value)
+    void assign(size_type count, const value_type& value)
     {
         _ResizeOps(count, _NoOp, [&](void) {
-            for (size_t index = 0; index < count; ++index) {
+            for (size_type index = 0; index < count; ++index) {
                 m_buffer[index] = value;
             }
         });
@@ -115,7 +105,10 @@ public:
     /// Replaces elements in this container with an initializer list.
     ///
     /// \param src The source initializer list to copy contents from.
-    void assign(std::initializer_list<ValueT> src) { _CopyFromInitList(src); }
+    void assign(std::initializer_list<value_type> src)
+    {
+        _CopyFromInitList(src);
+    }
 
     // -----------------------------------------------------------------------
     /// \name Element access
@@ -126,28 +119,31 @@ public:
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const ValueT& operator[](size_t index) const { return m_buffer[index]; }
+    const value_type& operator[](size_type index) const
+    {
+        return m_buffer[index];
+    }
 
     /// Mutable indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    ValueT& operator[](size_t index) { return m_buffer[index]; }
+    value_type& operator[](size_type index) { return m_buffer[index]; }
 
     /// Constant indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const ValueT& at(size_t index) const { return m_buffer[index]; }
+    const value_type& at(size_type index) const { return m_buffer[index]; }
 
     /// Mutable indexed element accessor.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    ValueT& at(size_t index) { return m_buffer[index]; }
+    value_type& at(size_type index) { return m_buffer[index]; }
 
     // -----------------------------------------------------------------------
     /// \name Capacity
@@ -162,12 +158,12 @@ public:
     /// Get the number of elements contained in this vector.
     ///
     /// \return Number of elements.
-    size_t size() const { return m_size; }
+    size_type size() const { return m_size; }
 
     /// Update the capacity of this vector.
     ///
     /// \param count Number of elements to update the capacity to.
-    void reserve(size_t count)
+    void reserve(size_type count)
     {
         if (count > m_capacity) {
             _Realloc(count);
@@ -178,7 +174,7 @@ public:
     /// allocation.
     ///
     /// \return Number of elements allocated.
-    size_t capacity() const { return m_capacity; }
+    size_type capacity() const { return m_capacity; }
 
     /// Clear un-used capacity allocated for this vector.
     void shrink_to_fit()
@@ -197,8 +193,8 @@ public:
     /// Clear all elements from the vector.
     void clear()
     {
-        for (size_t index = 0; index < m_size; ++index) {
-            m_buffer[index].~ValueT();
+        for (size_type index = 0; index < m_size; ++index) {
+            m_buffer[index].~value_type();
         }
 
         m_size = 0;
@@ -207,7 +203,7 @@ public:
     /// Appends an element to the end of the container.
     ///
     /// \param value The element value.
-    void push_back(const ValueT& value)
+    void push_back(const value_type& value)
     {
         // Allocate more memory if required.
         if (m_size == m_capacity) {
@@ -215,7 +211,7 @@ public:
         }
 
         // Initialize the element at the end.
-        new (m_buffer + m_size) ValueT();
+        new (m_buffer + m_size) value_type();
 
         // Copy value into element at end.
         m_buffer[m_size] = value;
@@ -227,7 +223,7 @@ public:
     /// Appends an element to the end of the container by moving the element.
     ///
     /// \param value The element value.
-    void push_back(ValueT&& value)
+    void push_back(value_type&& value)
     {
         // Allocate more memory if required.
         if (m_size == m_capacity) {
@@ -235,7 +231,7 @@ public:
         }
 
         // Initialize the element at the end.
-        new (m_buffer + m_size) ValueT();
+        new (m_buffer + m_size) value_type();
 
         // Move value into buffer.
         m_buffer[m_size] = std::move(value);
@@ -247,19 +243,19 @@ public:
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
-    void resize(size_t count) { _ResizeOps(count, _NoOp, _NoOp); }
+    void resize(size_type count) { _ResizeOps(count, _NoOp, _NoOp); }
 
     /// Resize the vector to contain \p count number of elements, appending
     /// default-initialized \p value when the vector increases in size.
     ///
     /// \param count The number of elements.
     /// \param value The default initialized value.
-    void resize(size_t count, const ValueT& value)
+    void resize(size_type count, const value_type& value)
     {
         _ResizeOps(
             count,
             [&](void) {
-                for (size_t index = m_size; index < count; ++index) {
+                for (size_type index = m_size; index < count; ++index) {
                     m_buffer[index] = value;
                 }
             },
@@ -281,10 +277,10 @@ private:
 
     // Computes a new capacity to contain an additional \p count number of
     // elements being inserted into this container.
-    size_t _NextCapacity(size_t count)
+    size_type _NextCapacity(size_type count)
     {
         // Compute base capacity value.
-        size_t nextCapacity = m_capacity;
+        size_type nextCapacity = m_capacity;
         if (nextCapacity == 0) {
             nextCapacity = 1;
         }
@@ -301,7 +297,7 @@ private:
     // initialized elements, as well as another operation against all elements.
     // This reduces the logic duplication of callers.
     template<typename NewElementsOp, typename AllElementsOp>
-    void _ResizeOps(size_t count,
+    void _ResizeOps(size_type count,
                     NewElementsOp newElementsOp,
                     AllElementsOp allElementsOp)
     {
@@ -312,16 +308,16 @@ private:
 
         if (count > m_size) {
             // Call constructor on new, un-initialized elements.
-            for (size_t index = m_size; index < count; ++index) {
-                new (m_buffer + index) ValueT();
+            for (size_type index = m_size; index < count; ++index) {
+                new (m_buffer + index) value_type();
             }
 
             // Run caller-specified operation on new elements.
             newElementsOp();
         } else if (count < m_size) {
             // Run de-constructor on elements removed due to down-sizing.
-            for (size_t index = count; index < m_size; ++index) {
-                m_buffer[index].~ValueT();
+            for (size_type index = count; index < m_size; ++index) {
+                m_buffer[index].~value_type();
             }
         }
 
@@ -340,10 +336,10 @@ private:
     }
 
     // Shared functionality for copying a source Vector to this one.
-    void _CopyFromInitList(const std::initializer_list<ValueT>& src)
+    void _CopyFromInitList(const std::initializer_list<value_type>& src)
     {
         _ResizeOps(src.size(), _NoOp, [&](void) {
-            size_t index = 0;
+            size_type index = 0;
             for (auto it = src.begin(); it != src.end(); ++it, ++index) {
                 m_buffer[index] = *it;
             }
@@ -354,24 +350,24 @@ private:
     // If this vector had existing elements, they will be migrated
     // into the newly allocated buffer.
     // The old elements are deconstructed and their buffer destroyed.
-    void _Realloc(size_t count)
+    void _Realloc(size_type count)
     {
         // Create a new allocation.
-        ValueT* newBuffer =
-            static_cast<ValueT*>(malloc(sizeof(ValueT) * count));
+        value_type* newBuffer =
+            static_cast<value_type*>(malloc(sizeof(value_type) * count));
 
         if (m_buffer != nullptr) {
             // Perform initialization on existing elements (in new buffer).
-            for (size_t index = 0; index < m_size; ++index) {
-                new (newBuffer + index) ValueT();
+            for (size_type index = 0; index < m_size; ++index) {
+                new (newBuffer + index) value_type();
             }
 
             // Copy existing elements into new buffer.
             _CopyBuffer(m_buffer, m_size, newBuffer, count);
 
             // De-construct elements in old buffer.
-            for (size_t index = 0; index < m_size; ++index) {
-                m_buffer[index].~ValueT();
+            for (size_type index = 0; index < m_size; ++index) {
+                m_buffer[index].~value_type();
             }
 
             // Free old allocation.
@@ -386,13 +382,13 @@ private:
     }
 
     // Copy elements from one buffer to another.
-    static void _CopyBuffer(ValueT* srcBuffer,
-                            size_t srcSize,
-                            ValueT* dstBuffer,
-                            size_t dstSize)
+    static void _CopyBuffer(value_type* srcBuffer,
+                            size_type srcSize,
+                            value_type* dstBuffer,
+                            size_type dstSize)
     {
-        size_t copyCount = std::min(srcSize, dstSize);
-        for (size_t i = 0; i < copyCount; ++i) {
+        size_type copyCount = std::min(srcSize, dstSize);
+        for (size_type i = 0; i < copyCount; ++i) {
             dstBuffer[i] = srcBuffer[i];
         }
     }
@@ -402,8 +398,8 @@ private:
     {
         if (m_buffer != nullptr) {
             // Call deconstructor on elements.
-            for (size_t index = 0; index < m_size; ++index) {
-                m_buffer[index].~ValueT();
+            for (size_type index = 0; index < m_size; ++index) {
+                m_buffer[index].~value_type();
             }
 
             // Free buffer.
@@ -416,12 +412,12 @@ private:
     }
 
     // Number of elements that this vector currently contains.
-    size_t m_size = 0;
+    size_type m_size = 0;
 
     // Number of elements that this vector can contain
     // without needing to resize.
-    size_t m_capacity = 0;
+    size_type m_capacity = 0;
 
     // Pointer to the allocated buffer.
-    ValueT* m_buffer = nullptr;
+    value_type* m_buffer = nullptr;
 };
