@@ -4,6 +4,27 @@
 
 static const char* s_templateProduct = "[template][product]";
 
+// Test type.
+struct Vec3f
+{
+    Vec3f() = default;
+
+    explicit Vec3f(float _x, float _y, float _z)
+      : x(_x)
+      , y(_y)
+      , z(_z)
+    {}
+
+    bool operator==(const Vec3f& other) const
+    {
+        return other.x == x and other.y == y and other.z == z;
+    }
+
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+};
+
 //
 // Construction
 //
@@ -292,9 +313,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
                            (std::string))
 {
     TestType vec;
-    vec.push_back("Foo");
-    vec.push_back("Bar");
-    vec.push_back("Baz");
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
 
     REQUIRE(vec.size() == 3);
     REQUIRE(vec.capacity() > 3);
@@ -302,6 +323,23 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_push_back",
     REQUIRE(vec[0] == typename TestType::value_type("Foo"));
     REQUIRE(vec[1] == typename TestType::value_type("Bar"));
     REQUIRE(vec[2] == typename TestType::value_type("Baz"));
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_emplace_back",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (Vec3f))
+{
+    TestType vec;
+    typename TestType::value_type element0 = vec.emplace_back(1, 2, 3);
+    typename TestType::value_type element1 = vec.emplace_back(2, 3, 4);
+
+    REQUIRE(vec.size() == 2);
+
+    REQUIRE(vec[0] == typename TestType::value_type(1, 2, 3));
+    REQUIRE(vec[1] == typename TestType::value_type(2, 3, 4));
+    REQUIRE(element0 == vec[0]);
+    REQUIRE(element1 == vec[1]);
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",

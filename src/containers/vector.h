@@ -240,6 +240,28 @@ public:
         m_size++;
     }
 
+    /// Constructs a new element at the end of the container.
+    ///
+    /// \param value The element value.
+    template<class... Args>
+    value_type& emplace_back(Args&&... args)
+    {
+        // Allocate more memory if required.
+        if (m_size == m_capacity) {
+            _Realloc(_NextCapacity(1));
+        }
+
+        // Initialize the element at the end.
+        value_type* element =
+            new (m_buffer + m_size) value_type(std::forward<Args>(args)...);
+
+        // Increase size by 1.
+        m_size++;
+
+        // Return the newly allocated element.
+        return *element;
+    }
+
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
