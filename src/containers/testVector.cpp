@@ -342,6 +342,36 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_emplace_back",
     REQUIRE(element1 == vec[1]);
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_pop_back",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
+
+    REQUIRE(vec.size() == 3);
+    REQUIRE(vec.capacity() > 3);
+
+    vec.pop_back();
+    REQUIRE(vec.size() == 2);
+    REQUIRE(vec.capacity() > 3);
+    REQUIRE(vec[0] == typename TestType::value_type("Foo"));
+    REQUIRE(vec[1] == typename TestType::value_type("Bar"));
+
+    vec.pop_back();
+    REQUIRE(vec.size() == 1);
+    REQUIRE(vec.capacity() > 3);
+    REQUIRE(vec[0] == typename TestType::value_type("Foo"));
+
+    vec.pop_back();
+    REQUIRE(vec.size() == 0);
+    REQUIRE(vec.capacity() > 3);
+
+}
+
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
                            s_templateProduct,
                            (std::vector, Vector),

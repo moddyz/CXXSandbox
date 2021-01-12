@@ -262,6 +262,15 @@ public:
         return *element;
     }
 
+    /// Removes the last element of this vector.
+    ///
+    /// If the vector is empty, this results in undefined behavior!
+    void pop_back()
+    {
+        m_buffer[m_size - 1].~value_type();
+        m_size--;
+    }
+
     /// Resize the vector to contain \p count number of elements.
     ///
     /// \param count The number of elements.
