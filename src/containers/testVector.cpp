@@ -216,6 +216,19 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_at",
 // Capacity
 //
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_empty",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (int, float, std::string))
+{
+    TestType vec;
+    REQUIRE(vec.empty());
+    vec.reserve(4);
+    REQUIRE(vec.empty());
+    vec.resize(2);
+    REQUIRE(!vec.empty());
+}
+
 TEMPLATE_PRODUCT_TEST_CASE("Vector_reserve",
                            s_templateProduct,
                            (std::vector, Vector),
@@ -369,7 +382,6 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_pop_back",
     vec.pop_back();
     REQUIRE(vec.size() == 0);
     REQUIRE(vec.capacity() > 3);
-
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_resize",
