@@ -210,6 +210,8 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_at",
     vec.at(1) = "bar";
     REQUIRE(vec.at(0) == typename TestType::value_type("foo"));
     REQUIRE(vec.at(1) == typename TestType::value_type("bar"));
+
+    REQUIRE_THROWS_AS(vec.at(2), std::out_of_range);
 }
 
 //

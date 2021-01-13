@@ -114,7 +114,7 @@ public:
     /// \name Element access
     // -----------------------------------------------------------------------
 
-    /// Constant indexed element accessor.
+    /// Access a read-only element.
     ///
     /// \param index The index of the element.
     ///
@@ -124,26 +124,42 @@ public:
         return m_buffer[index];
     }
 
-    /// Mutable indexed element accessor.
+    /// Access a mutable element.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
     value_type& operator[](size_type index) { return m_buffer[index]; }
 
-    /// Constant indexed element accessor.
+    /// Access a read-only element with bounds checking.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    const value_type& at(size_type index) const { return m_buffer[index]; }
+    const value_type& at(size_type index) const
+    {
+        if (index >= m_size) {
+            throw std::out_of_range("Index is out of range.");
+        }
 
-    /// Mutable indexed element accessor.
+        return m_buffer[index];
+    }
+
+    /// Access a mutable element with bounds checking.
     ///
     /// \param index The index of the element.
     ///
     /// \return The element.
-    value_type& at(size_type index) { return m_buffer[index]; }
+    value_type& at(size_type index)
+    {
+        if (index >= m_size) {
+            throw std::out_of_range("Index is out of range.");
+        }
+
+        return m_buffer[index];
+    }
+
+    /// Access the first element.
 
     // -----------------------------------------------------------------------
     /// \name Capacity
