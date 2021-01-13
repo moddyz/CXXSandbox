@@ -159,7 +159,25 @@ public:
         return m_buffer[index];
     }
 
-    /// Access the first element.
+    /// Access the first element, in a read-only fashion.
+    ///
+    /// This results in undefined behavior if this vector is empty.
+    const value_type& front() const { return m_buffer[0]; }
+
+    /// Access the first element, in a mutable fashion.
+    ///
+    /// \pre This results in undefined behavior if this vector is empty.
+    value_type& front() { return m_buffer[0]; }
+
+    /// Access the last element, in a read-only fashion.
+    ///
+    /// This results in undefined behavior if this vector is empty.
+    const value_type& back() const { return m_buffer[m_size - 1]; }
+
+    /// Access the last element, in a mutable fashion.
+    ///
+    /// \pre This results in undefined behavior if this vector is empty.
+    value_type& back() { return m_buffer[m_size - 1]; }
 
     // -----------------------------------------------------------------------
     /// \name Capacity

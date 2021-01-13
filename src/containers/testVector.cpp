@@ -214,6 +214,34 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_at",
     REQUIRE_THROWS_AS(vec.at(2), std::out_of_range);
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_front",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+
+    vec.push_back("foo");
+    REQUIRE(vec.front() == "foo");
+
+    vec.push_back("bar");
+    REQUIRE(vec.front() == "foo");
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_back",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+
+    vec.push_back("foo");
+    REQUIRE(vec.back() == "foo");
+
+    vec.push_back("bar");
+    REQUIRE(vec.back() == "bar");
+}
+
 //
 // Capacity
 //
