@@ -243,6 +243,58 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_back",
 }
 
 //
+// Iteration
+//
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_begin",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vecA;
+    vecA.push_back("foo");
+    vecA.push_back("bar");
+    vecA.push_back("baz");
+    REQUIRE(*vecA.begin() == "foo");
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_IncrementForwards",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vecA;
+    vecA.push_back("foo");
+    vecA.push_back("bar");
+    vecA.push_back("baz");
+
+    typename TestType::iterator it = vecA.begin();
+    it++;
+    REQUIRE(*it == "bar");
+    it++;
+    REQUIRE(*it == "baz");
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_IncrementBackwards",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vecA;
+    vecA.push_back("foo");
+    vecA.push_back("bar");
+    vecA.push_back("baz");
+
+    typename TestType::iterator it = vecA.end();
+    it--;
+    REQUIRE(*it == "baz");
+    it--;
+    REQUIRE(*it == "bar");
+    it--;
+    REQUIRE(*it == "foo");
+}
+
+//
 // Capacity
 //
 

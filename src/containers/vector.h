@@ -6,7 +6,7 @@
 
 /// \class Vector
 ///
-/// A dynamically re-sizable, homogenous array.
+/// A dynamically re-sizable, type-homogenous array.
 ///
 /// \tparam ValueT The type of each element.
 template<typename ValueT>
@@ -21,7 +21,7 @@ public:
     /// \typedef size_type
     ///
     /// The value type of the container size.
-    using size_type = size_t;
+    using size_type = std::size_t;
 
     // -----------------------------------------------------------------------
     /// \name Construction
@@ -162,22 +162,119 @@ public:
     /// Access the first element, in a read-only fashion.
     ///
     /// This results in undefined behavior if this vector is empty.
+    ///
+    /// \return The first element.
     const value_type& front() const { return m_buffer[0]; }
 
     /// Access the first element, in a mutable fashion.
     ///
     /// \pre This results in undefined behavior if this vector is empty.
+    ///
+    /// \return The first element.
     value_type& front() { return m_buffer[0]; }
 
     /// Access the last element, in a read-only fashion.
     ///
     /// This results in undefined behavior if this vector is empty.
+    ///
+    /// \return The last element.
     const value_type& back() const { return m_buffer[m_size - 1]; }
 
     /// Access the last element, in a mutable fashion.
     ///
     /// \pre This results in undefined behavior if this vector is empty.
+    ///
+    /// \return The last element.
     value_type& back() { return m_buffer[m_size - 1]; }
+
+    // -----------------------------------------------------------------------
+    /// \name Iterators
+    // -----------------------------------------------------------------------
+
+    /// \class iterator
+    ///
+    /// iterator for the \ref Vector class.
+    class iterator final
+    {
+        /// \typedef value_type
+        ///
+        /// The value type of element being iterated.
+        using value_type = ValueT;
+
+        /// \typedef size_type
+        ///
+        /// The value type of the container size.
+        using size_type = std::size_t;
+
+    public:
+        /// Default constructor.
+        iterator() = default;
+
+        /// iterator construction, with the current position.
+        ///
+        /// \param current The position to initialize this iterator to.
+        iterator(value_type* ptr)
+          : m_ptr(ptr)
+        {}
+
+        /// Check if the current position of the iterator matches another.
+        ///
+        /// \retval true if the positions match.
+        inline bool operator!=(const iterator& i_other) const
+        {
+            return m_ptr != i_other.m_ptr;
+        }
+
+        /// De-reference this iterator, returning value in a readable manner.
+        inline const value_type& operator*() const { return *m_ptr; }
+
+        /// De-reference this iterator, returning value in a writable manner.
+        inline value_type& operator*() { return *m_ptr; }
+
+        /// Increment this iterator forwards.
+        inline const iterator& operator++()
+        {
+            m_ptr++;
+            return (*this);
+        }
+
+        /// Increment this iterator backwards.
+        inline const iterator& operator--()
+        {
+            m_ptr--;
+            return (*this);
+        }
+
+        /// Increment this iterator forwards.
+        inline const iterator& operator++(int)
+        {
+            m_ptr++;
+            return (*this);
+        }
+
+        /// Increment this iterator backwards.
+        inline const iterator& operator--(int)
+        {
+            m_ptr--;
+            return (*this);
+        }
+
+    private:
+        value_type* m_ptr = nullptr;
+    };
+
+    /// Creates an iterator which points to the position of the first element.
+    ///
+    /// The iterator will be invalid if the container is empty.
+    ///
+    /// \return An iterator.
+    iterator begin() const { return iterator(m_buffer); }
+
+    /// Creates an iterator which points to the position right \em after the
+    /// last element.
+    ///
+    /// \return An iterator.
+    iterator end() const { return iterator(m_buffer + m_size); }
 
     // -----------------------------------------------------------------------
     /// \name Capacity
