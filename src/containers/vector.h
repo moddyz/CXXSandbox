@@ -264,20 +264,14 @@ public:
         /// \param count The number of positions forward.
         ///
         /// \return New iterator.
-        iterator operator+(size_type count)
-        {
-            return iterator(m_ptr + count);
-        }
+        iterator operator+(size_type count) { return iterator(m_ptr + count); }
 
         /// Create a new iterator which is \p count positions backwards.
         ///
         /// \param count The number of positions backwards.
         ///
         /// \return New iterator.
-        iterator operator-(size_type count)
-        {
-            return iterator(m_ptr - count);
-        }
+        iterator operator-(size_type count) { return iterator(m_ptr - count); }
 
         /// Increment this iterator backwards.
         size_type operator-(const iterator& it) const
