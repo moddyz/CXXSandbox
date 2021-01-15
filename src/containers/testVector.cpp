@@ -578,3 +578,35 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_swap",
     REQUIRE(vecB[1] == 2);
     REQUIRE(vecB[2] == 3);
 }
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_insert",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
+
+    {
+        typename TestType::iterator it =
+            vec.insert(vec.begin(), std::string("Hi"));
+        REQUIRE(vec.size() == 4);
+        CHECK(vec[0] == typename TestType::value_type("Hi"));
+        CHECK(vec[1] == typename TestType::value_type("Foo"));
+        CHECK(vec[2] == typename TestType::value_type("Bar"));
+        CHECK(vec[3] == typename TestType::value_type("Baz"));
+    }
+
+    {
+        typename TestType::iterator it =
+            vec.insert(vec.begin() + 2, std::string("Hello"));
+        REQUIRE(vec.size() == 5);
+        CHECK(vec[0] == typename TestType::value_type("Hi"));
+        CHECK(vec[1] == typename TestType::value_type("Foo"));
+        CHECK(vec[2] == typename TestType::value_type("Hello"));
+        CHECK(vec[3] == typename TestType::value_type("Bar"));
+        CHECK(vec[4] == typename TestType::value_type("Baz"));
+    }
+}

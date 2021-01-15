@@ -460,6 +460,70 @@ public:
         std::swap(m_buffer, other.m_buffer);
     }
 
+    /// Insert elements at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    iterator insert(iterator position, const value_type& value)
+    {
+        size_type posIndex = position - begin();
+        size_type insertCount = 1;
+
+        // Allocate more memory if required.
+        value_type* targetBuffer = nullptr;
+        if (m_size == m_capacity) {
+            size_type count = _NextCapacity(insertCount);
+
+            // Create a new allocation.
+            targetBuffer = _Alloc(count);
+
+            // Initialize target range.
+            for (size_type index = 0; index < m_size + insertCount; ++index) {
+                new (targetBuffer + index) value_type();
+            }
+        } else {
+            targetBuffer = m_buffer;
+            for (size_type index = m_size; index < m_size + insertCount;
+                 ++index) {
+                new (targetBuffer + index) value_type();
+            }
+        }
+
+        if (m_buffer != nullptr) {
+            // Migrate left range.
+            if (posIndex != 0) {
+                _CopyBuffer(m_buffer, posIndex, targetBuffer, posIndex);
+            }
+
+            // Migrate right range.
+            if (m_size - posIndex != 0) {
+                _CopyBufferReversed(m_buffer + posIndex,
+                                    m_size - posIndex,
+                                    targetBuffer + insertCount + posIndex,
+                                    m_size - posIndex);
+            }
+
+            if (targetBuffer != m_buffer) {
+                // De-construct elements in old buffer.
+                for (size_type index = 0; index < m_size; ++index) {
+                    m_buffer[index].~value_type();
+                }
+
+                // Free old allocation.
+                free(m_buffer);
+
+                m_buffer = targetBuffer;
+            }
+        }
+
+        // Set inserted value.
+        m_buffer[posIndex] = value;
+
+        // Increase size by 1.
+        m_size += insertCount;
+
+        return iterator(m_buffer + posIndex);
+    }
+
 private:
     static void _NoOp() {}
 
@@ -534,6 +598,12 @@ private:
         });
     }
 
+    // Allocate a block of memory containing \p count elements.
+    static value_type* _Alloc(size_type count)
+    {
+        return static_cast<value_type*>(malloc(sizeof(value_type) * count));
+    }
+
     // Create a new allocation to contain \p count elements.
     // If this vector had existing elements, they will be migrated
     // into the newly allocated buffer.
@@ -541,8 +611,7 @@ private:
     void _Realloc(size_type count)
     {
         // Create a new allocation.
-        value_type* newBuffer =
-            static_cast<value_type*>(malloc(sizeof(value_type) * count));
+        value_type* newBuffer = _Alloc(count);
 
         if (m_buffer != nullptr) {
             // Perform initialization on existing elements (in new buffer).
@@ -578,6 +647,18 @@ private:
         size_type copyCount = std::min(srcSize, dstSize);
         for (size_type i = 0; i < copyCount; ++i) {
             dstBuffer[i] = srcBuffer[i];
+        }
+    }
+
+    // Copy elements from one buffer to another in reversed order.
+    static void _CopyBufferReversed(value_type* srcBuffer,
+                                    size_type srcSize,
+                                    value_type* dstBuffer,
+                                    size_type dstSize)
+    {
+        size_type copyCount = std::min(srcSize, dstSize);
+        for (size_type i = copyCount; i > 0; --i) {
+            dstBuffer[i - 1] = srcBuffer[i - 1];
         }
     }
 
