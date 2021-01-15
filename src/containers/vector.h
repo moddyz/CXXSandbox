@@ -220,43 +220,49 @@ public:
         /// Check if the current position of the iterator matches another.
         ///
         /// \retval true if the positions match.
-        inline bool operator!=(const iterator& i_other) const
+        bool operator!=(const iterator& i_other) const
         {
             return m_ptr != i_other.m_ptr;
         }
 
         /// De-reference this iterator, returning value in a readable manner.
-        inline const value_type& operator*() const { return *m_ptr; }
+        const value_type& operator*() const { return *m_ptr; }
 
         /// De-reference this iterator, returning value in a writable manner.
-        inline value_type& operator*() { return *m_ptr; }
+        value_type& operator*() { return *m_ptr; }
 
         /// Increment this iterator forwards.
-        inline const iterator& operator++()
+        const iterator& operator++()
         {
             m_ptr++;
             return (*this);
         }
 
         /// Increment this iterator backwards.
-        inline const iterator& operator--()
+        const iterator& operator--()
         {
             m_ptr--;
             return (*this);
         }
 
         /// Increment this iterator forwards.
-        inline const iterator& operator++(int)
+        const iterator& operator++(int)
         {
             m_ptr++;
             return (*this);
         }
 
         /// Increment this iterator backwards.
-        inline const iterator& operator--(int)
+        const iterator& operator--(int)
         {
             m_ptr--;
             return (*this);
+        }
+
+        /// Increment this iterator backwards.
+        size_type operator-(const iterator& it) const
+        {
+            return m_ptr - it.m_ptr;
         }
 
     private:

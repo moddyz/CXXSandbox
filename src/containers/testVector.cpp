@@ -251,11 +251,11 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_begin",
                            (std::vector, Vector),
                            (std::string))
 {
-    TestType vecA;
-    vecA.push_back("foo");
-    vecA.push_back("bar");
-    vecA.push_back("baz");
-    REQUIRE(*vecA.begin() == "foo");
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
+    REQUIRE(*vec.begin() == "foo");
 }
 
 TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_IncrementForwards",
@@ -263,12 +263,12 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_IncrementForwards",
                            (std::vector, Vector),
                            (std::string))
 {
-    TestType vecA;
-    vecA.push_back("foo");
-    vecA.push_back("bar");
-    vecA.push_back("baz");
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
 
-    typename TestType::iterator it = vecA.begin();
+    typename TestType::iterator it = vec.begin();
     it++;
     REQUIRE(*it == "bar");
     it++;
@@ -280,18 +280,39 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_IncrementBackwards",
                            (std::vector, Vector),
                            (std::string))
 {
-    TestType vecA;
-    vecA.push_back("foo");
-    vecA.push_back("bar");
-    vecA.push_back("baz");
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
 
-    typename TestType::iterator it = vecA.end();
+    typename TestType::iterator it = vec.end();
     it--;
     REQUIRE(*it == "baz");
     it--;
     REQUIRE(*it == "bar");
     it--;
     REQUIRE(*it == "foo");
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_Difference",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
+
+    REQUIRE(vec.end() - vec.begin() == 3);
+
+    typename TestType::iterator it = vec.end();
+    it--;
+    REQUIRE(it - vec.begin() == 2);
+    it--;
+    REQUIRE(it - vec.begin() == 1);
+    it--;
+    REQUIRE(it - vec.begin() == 0);
 }
 
 //
