@@ -315,6 +315,35 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_Difference",
     REQUIRE(it - vec.begin() == 0);
 }
 
+TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_Addition",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
+
+    REQUIRE(*(vec.begin() + 1) == "bar");
+    REQUIRE(*(vec.begin() + 2) == "baz");
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_iterator_Subtraction",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back("foo");
+    vec.push_back("bar");
+    vec.push_back("baz");
+
+    REQUIRE(*(vec.end() - 1) == "baz");
+    REQUIRE(*(vec.end() - 2) == "bar");
+    REQUIRE(*(vec.end() - 3) == "foo");
+}
+
 //
 // Capacity
 //
