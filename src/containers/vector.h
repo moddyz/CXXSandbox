@@ -486,6 +486,27 @@ public:
         return iterator(m_buffer + posIndex);
     }
 
+    /// Insert a element at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param value The value to move.
+    iterator insert(iterator position, value_type&& value)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, 1, value);
+
+        // Set values at insert locations.
+        m_buffer[posIndex] = std::move(value);
+
+        // Increase size.
+        m_size += 1;
+
+        return iterator(m_buffer + posIndex);
+    }
+
 private:
     static void _NoOp() {}
 
