@@ -579,7 +579,7 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_swap",
     REQUIRE(vecB[2] == 3);
 }
 
-TEMPLATE_PRODUCT_TEST_CASE("Vector_insert",
+TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_single_value",
                            s_templateProduct,
                            (std::vector, Vector),
                            (std::string))
@@ -608,5 +608,42 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert",
         CHECK(vec[2] == typename TestType::value_type("Hello"));
         CHECK(vec[3] == typename TestType::value_type("Bar"));
         CHECK(vec[4] == typename TestType::value_type("Baz"));
+    }
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_multiple_values",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
+
+    {
+        typename TestType::iterator it =
+            vec.insert(vec.begin(), 3, std::string("Hi"));
+        REQUIRE(vec.size() == 6);
+        CHECK(vec[0] == typename TestType::value_type("Hi"));
+        CHECK(vec[1] == typename TestType::value_type("Hi"));
+        CHECK(vec[2] == typename TestType::value_type("Hi"));
+        CHECK(vec[3] == typename TestType::value_type("Foo"));
+        CHECK(vec[4] == typename TestType::value_type("Bar"));
+        CHECK(vec[5] == typename TestType::value_type("Baz"));
+    }
+
+    {
+        typename TestType::iterator it =
+            vec.insert(vec.begin() + 4, 2, std::string("Hello"));
+        REQUIRE(vec.size() == 8);
+        CHECK(vec[0] == typename TestType::value_type("Hi"));
+        CHECK(vec[1] == typename TestType::value_type("Hi"));
+        CHECK(vec[2] == typename TestType::value_type("Hi"));
+        CHECK(vec[3] == typename TestType::value_type("Foo"));
+        CHECK(vec[4] == typename TestType::value_type("Hello"));
+        CHECK(vec[5] == typename TestType::value_type("Hello"));
+        CHECK(vec[6] == typename TestType::value_type("Bar"));
+        CHECK(vec[7] == typename TestType::value_type("Baz"));
     }
 }

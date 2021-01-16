@@ -357,7 +357,7 @@ public:
     void push_back(const value_type& value)
     {
         // Allocate more memory if required.
-        if (m_size == m_capacity) {
+        if (m_size + 1 > m_capacity) {
             _Realloc(_NextCapacity(1));
         }
 
@@ -377,7 +377,7 @@ public:
     void push_back(value_type&& value)
     {
         // Allocate more memory if required.
-        if (m_size == m_capacity) {
+        if (m_size + 1 > m_capacity) {
             _Realloc(_NextCapacity(1));
         }
 
@@ -398,7 +398,7 @@ public:
     value_type& emplace_back(Args&&... args)
     {
         // Allocate more memory if required.
-        if (m_size == m_capacity) {
+        if (m_size + 1 > m_capacity) {
             _Realloc(_NextCapacity(1));
         }
 
@@ -457,27 +457,57 @@ public:
     /// Insert elements at the specified location in the container.
     ///
     /// \param position The position to insert elements before.
+    /// \param value The value to insert.
     iterator insert(iterator position, const value_type& value)
     {
-        size_type posIndex = position - begin();
-        size_type insertCount = 1;
+        return insert(position, 1, value);
+    }
 
+    /// Insert elements at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param count Number of elements to insert.
+    /// \param value The value to insert.
+    iterator insert(iterator position, size_type count, const value_type& value)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, count, value);
+
+        // Set values at insert locations.
+        for (size_t i = 0; i < count; ++i) {
+            m_buffer[posIndex + i] = value;
+        }
+
+        m_size += count;
+
+        return iterator(m_buffer + posIndex);
+    }
+
+private:
+    static void _NoOp() {}
+
+    void _ReallocForInsert(size_type posIndex,
+                           size_type count,
+                           const value_type& value)
+    {
         // Allocate more memory if required.
         value_type* targetBuffer = nullptr;
-        if (m_size == m_capacity) {
-            size_type count = _NextCapacity(insertCount);
+        if (m_size + count > m_capacity) {
+            size_type elementsToAlloc = _NextCapacity(count);
 
             // Create a new allocation.
-            targetBuffer = _Alloc(count);
+            targetBuffer = _Alloc(elementsToAlloc);
 
             // Initialize target range.
-            for (size_type index = 0; index < m_size + insertCount; ++index) {
+            for (size_type index = 0; index < m_size + count; ++index) {
                 new (targetBuffer + index) value_type();
             }
         } else {
             targetBuffer = m_buffer;
-            for (size_type index = m_size; index < m_size + insertCount;
-                 ++index) {
+            for (size_type index = m_size; index < m_size + count; ++index) {
                 new (targetBuffer + index) value_type();
             }
         }
@@ -492,7 +522,7 @@ public:
             if (m_size - posIndex != 0) {
                 _CopyBufferReversed(m_buffer + posIndex,
                                     m_size - posIndex,
-                                    targetBuffer + insertCount + posIndex,
+                                    targetBuffer + count + posIndex,
                                     m_size - posIndex);
             }
 
@@ -508,18 +538,7 @@ public:
                 m_buffer = targetBuffer;
             }
         }
-
-        // Set inserted value.
-        m_buffer[posIndex] = value;
-
-        // Increase size by 1.
-        m_size += insertCount;
-
-        return iterator(m_buffer + posIndex);
     }
-
-private:
-    static void _NoOp() {}
 
     // Computes a new capacity to contain an additional \p count number of
     // elements being inserted into this container.
