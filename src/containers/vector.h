@@ -510,6 +510,7 @@ public:
 private:
     static void _NoOp() {}
 
+    // Perform memory allocation and data migration for a insert operation.
     void _ReallocForInsert(size_type posIndex,
                            size_type count,
                            const value_type& value)
@@ -522,17 +523,20 @@ private:
             // Create a new allocation.
             targetBuffer = _Alloc(elementsToAlloc);
 
-            // Initialize target range.
+            // Initialize full range due to new allocation.
             for (size_type index = 0; index < m_size + count; ++index) {
                 new (targetBuffer + index) value_type();
             }
         } else {
             targetBuffer = m_buffer;
+
+            // Initialize extended range.
             for (size_type index = m_size; index < m_size + count; ++index) {
                 new (targetBuffer + index) value_type();
             }
         }
 
+        // Perform buffer migration is necessary.
         if (m_buffer != nullptr) {
             // Migrate left range.
             if (posIndex != 0) {
@@ -547,6 +551,7 @@ private:
                                     m_size - posIndex);
             }
 
+            // If targetBuffer is a new allocation...
             if (targetBuffer != m_buffer) {
                 // De-construct elements in old buffer.
                 for (size_type index = 0; index < m_size; ++index) {
@@ -556,6 +561,7 @@ private:
                 // Free old allocation.
                 free(m_buffer);
 
+                // Upgrade to new buffer.
                 m_buffer = targetBuffer;
             }
         }
