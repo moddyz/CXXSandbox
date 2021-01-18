@@ -355,6 +355,8 @@ public:
     ///
     /// \param position The position to insert elements before.
     /// \param value The value to insert.
+    ///
+    /// \return Position to the inserted element.
     iterator insert(iterator position, const value_type& value)
     {
         return insert(position, 1, value);
@@ -365,6 +367,8 @@ public:
     /// \param position The position to insert elements before.
     /// \param count Number of elements to insert.
     /// \param value The value to insert.
+    ///
+    /// \return Starting position of the inserted elements.
     iterator insert(iterator position, size_type count, const value_type& value)
     {
         // Compute starting index
@@ -387,6 +391,8 @@ public:
     ///
     /// \param position The position to insert elements before.
     /// \param value The value to move.
+    ///
+    /// \return Position of the inserted element.
     iterator insert(iterator position, value_type&& value)
     {
         // Compute starting index
@@ -408,6 +414,8 @@ public:
     ///
     /// \param position The position to insert elements before.
     /// \param initList Initializer list to insert.
+    ///
+    /// \return Starting position of the inserted elements.
     iterator insert(iterator position,
                     std::initializer_list<value_type> initList)
     {
@@ -429,6 +437,29 @@ public:
         return iterator(m_buffer + posIndex);
     }
 
+    /// Constructs an element in-place at the specified \p position.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param args Constructor arguments.
+    ///
+    /// \return Position of the inserted element.
+    template<class... Args>
+    iterator emplace(iterator position, Args&&... args)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, 1);
+
+        // Construct in place at insertion position.
+        new (m_buffer + posIndex) value_type(std::forward<Args>(args)...);
+
+        // Increment size.
+        m_size += 1;
+
+        return iterator(m_buffer + posIndex);
+    }
 
     /// Appends an element to the end of the container.
     ///
@@ -532,7 +563,6 @@ public:
         std::swap(m_size, other.m_size);
         std::swap(m_buffer, other.m_buffer);
     }
-
 
 private:
     static void _NoOp() {}

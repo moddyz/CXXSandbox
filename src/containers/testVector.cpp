@@ -25,6 +25,12 @@ struct Vec3f
     float z = 0.0f;
 };
 
+inline std::ostream& operator<<(std::ostream& stream, const Vec3f& value)
+{
+    stream << "Vec3f(" << value.x << ", " << value.y << ", " << value.z << ")";
+    return stream;
+}
+
 //
 // Construction
 //
@@ -668,4 +674,22 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_initializer_list",
     CHECK(vec[3] == typename TestType::value_type("Three"));
     CHECK(vec[4] == typename TestType::value_type("Bar"));
     CHECK(vec[5] == typename TestType::value_type("Baz"));
+}
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_emplace",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (Vec3f))
+{
+    TestType vec;
+    typename TestType::value_type element0 = vec.emplace_back(1, 1, 1);
+    typename TestType::value_type element1 = vec.emplace_back(2, 2, 2);
+    typename TestType::value_type element2 = vec.emplace_back(3, 3, 3);
+
+    vec.emplace(vec.begin() + 1, 5, 5, 5);
+    REQUIRE(vec.size() == 4);
+    REQUIRE(vec[0] == typename TestType::value_type(1, 1, 1));
+    REQUIRE(vec[1] == typename TestType::value_type(5, 5, 5));
+    REQUIRE(vec[2] == typename TestType::value_type(2, 2, 2));
+    REQUIRE(vec[3] == typename TestType::value_type(3, 3, 3));
 }
