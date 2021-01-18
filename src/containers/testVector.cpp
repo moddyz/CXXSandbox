@@ -647,3 +647,25 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_multiple_values",
         CHECK(vec[7] == typename TestType::value_type("Baz"));
     }
 }
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_initializer_list",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
+
+    typename TestType::iterator it = vec.insert(
+        vec.begin() + 1,
+        { std::string("One"), std::string("Two"), std::string("Three") });
+    REQUIRE(vec.size() == 6);
+    CHECK(vec[0] == typename TestType::value_type("Foo"));
+    CHECK(vec[1] == typename TestType::value_type("One"));
+    CHECK(vec[2] == typename TestType::value_type("Two"));
+    CHECK(vec[3] == typename TestType::value_type("Three"));
+    CHECK(vec[4] == typename TestType::value_type("Bar"));
+    CHECK(vec[5] == typename TestType::value_type("Baz"));
+}

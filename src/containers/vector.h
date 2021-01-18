@@ -474,7 +474,7 @@ public:
         size_type posIndex = position - begin();
 
         // Perform reallocation and data migration (left & right ranges).
-        _ReallocForInsert(posIndex, count, value);
+        _ReallocForInsert(posIndex, count);
 
         // Set values at insert locations.
         for (size_t i = 0; i < count; ++i) {
@@ -496,7 +496,7 @@ public:
         size_type posIndex = position - begin();
 
         // Perform reallocation and data migration (left & right ranges).
-        _ReallocForInsert(posIndex, 1, value);
+        _ReallocForInsert(posIndex, 1);
 
         // Set values at insert locations.
         m_buffer[posIndex] = std::move(value);
@@ -507,13 +507,36 @@ public:
         return iterator(m_buffer + posIndex);
     }
 
+    /// Insert element at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param initList Initializer list to insert.
+    iterator insert(iterator position,
+                    std::initializer_list<value_type> initList)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, initList.size());
+
+        // Set values at insert locations.
+        size_type offset = 0;
+        for (auto it = initList.begin(); it != initList.end(); ++it, ++offset) {
+            m_buffer[posIndex + offset] = *it;
+        }
+
+        // Increase size.
+        m_size += initList.size();
+
+        return iterator(m_buffer + posIndex);
+    }
+
 private:
     static void _NoOp() {}
 
     // Perform memory allocation and data migration for a insert operation.
-    void _ReallocForInsert(size_type posIndex,
-                           size_type count,
-                           const value_type& value)
+    void _ReallocForInsert(size_type posIndex, size_type count)
     {
         // Allocate more memory if required.
         value_type* targetBuffer = nullptr;
