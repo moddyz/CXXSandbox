@@ -351,6 +351,85 @@ public:
         m_size = 0;
     }
 
+    /// Insert elements at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param value The value to insert.
+    iterator insert(iterator position, const value_type& value)
+    {
+        return insert(position, 1, value);
+    }
+
+    /// Insert elements at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param count Number of elements to insert.
+    /// \param value The value to insert.
+    iterator insert(iterator position, size_type count, const value_type& value)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, count);
+
+        // Set values at insert locations.
+        for (size_t i = 0; i < count; ++i) {
+            m_buffer[posIndex + i] = value;
+        }
+
+        m_size += count;
+
+        return iterator(m_buffer + posIndex);
+    }
+
+    /// Insert a element at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param value The value to move.
+    iterator insert(iterator position, value_type&& value)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, 1);
+
+        // Set values at insert locations.
+        m_buffer[posIndex] = std::move(value);
+
+        // Increase size.
+        m_size += 1;
+
+        return iterator(m_buffer + posIndex);
+    }
+
+    /// Insert element at the specified location in the container.
+    ///
+    /// \param position The position to insert elements before.
+    /// \param initList Initializer list to insert.
+    iterator insert(iterator position,
+                    std::initializer_list<value_type> initList)
+    {
+        // Compute starting index
+        size_type posIndex = position - begin();
+
+        // Perform reallocation and data migration (left & right ranges).
+        _ReallocForInsert(posIndex, initList.size());
+
+        // Set values at insert locations.
+        size_type offset = 0;
+        for (auto it = initList.begin(); it != initList.end(); ++it, ++offset) {
+            m_buffer[posIndex + offset] = *it;
+        }
+
+        // Increase size.
+        m_size += initList.size();
+
+        return iterator(m_buffer + posIndex);
+    }
+
+
     /// Appends an element to the end of the container.
     ///
     /// \param value The element value.
@@ -454,83 +533,6 @@ public:
         std::swap(m_buffer, other.m_buffer);
     }
 
-    /// Insert elements at the specified location in the container.
-    ///
-    /// \param position The position to insert elements before.
-    /// \param value The value to insert.
-    iterator insert(iterator position, const value_type& value)
-    {
-        return insert(position, 1, value);
-    }
-
-    /// Insert elements at the specified location in the container.
-    ///
-    /// \param position The position to insert elements before.
-    /// \param count Number of elements to insert.
-    /// \param value The value to insert.
-    iterator insert(iterator position, size_type count, const value_type& value)
-    {
-        // Compute starting index
-        size_type posIndex = position - begin();
-
-        // Perform reallocation and data migration (left & right ranges).
-        _ReallocForInsert(posIndex, count);
-
-        // Set values at insert locations.
-        for (size_t i = 0; i < count; ++i) {
-            m_buffer[posIndex + i] = value;
-        }
-
-        m_size += count;
-
-        return iterator(m_buffer + posIndex);
-    }
-
-    /// Insert a element at the specified location in the container.
-    ///
-    /// \param position The position to insert elements before.
-    /// \param value The value to move.
-    iterator insert(iterator position, value_type&& value)
-    {
-        // Compute starting index
-        size_type posIndex = position - begin();
-
-        // Perform reallocation and data migration (left & right ranges).
-        _ReallocForInsert(posIndex, 1);
-
-        // Set values at insert locations.
-        m_buffer[posIndex] = std::move(value);
-
-        // Increase size.
-        m_size += 1;
-
-        return iterator(m_buffer + posIndex);
-    }
-
-    /// Insert element at the specified location in the container.
-    ///
-    /// \param position The position to insert elements before.
-    /// \param initList Initializer list to insert.
-    iterator insert(iterator position,
-                    std::initializer_list<value_type> initList)
-    {
-        // Compute starting index
-        size_type posIndex = position - begin();
-
-        // Perform reallocation and data migration (left & right ranges).
-        _ReallocForInsert(posIndex, initList.size());
-
-        // Set values at insert locations.
-        size_type offset = 0;
-        for (auto it = initList.begin(); it != initList.end(); ++it, ++offset) {
-            m_buffer[posIndex + offset] = *it;
-        }
-
-        // Increase size.
-        m_size += initList.size();
-
-        return iterator(m_buffer + posIndex);
-    }
 
 private:
     static void _NoOp() {}
