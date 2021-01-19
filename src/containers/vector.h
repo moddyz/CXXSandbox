@@ -220,9 +220,17 @@ public:
         /// Check if the current position of the iterator matches another.
         ///
         /// \retval true if the positions match.
+        bool operator==(const iterator& i_other) const
+        {
+            return m_ptr == i_other.m_ptr;
+        }
+
+        /// Check if the current position of the iterator matches another.
+        ///
+        /// \retval true If the positions do not match.
         bool operator!=(const iterator& i_other) const
         {
-            return m_ptr != i_other.m_ptr;
+            return !(operator==(i_other));
         }
 
         /// De-reference this iterator, returning value in a readable manner.
@@ -457,6 +465,32 @@ public:
 
         // Increment size.
         m_size += 1;
+
+        return iterator(m_buffer + posIndex);
+    }
+
+    /// Erase the element at the specified \p position from the container.
+    ///
+    /// \param position The position of the element to erase.
+    ///
+    /// \return The position of the erased element.
+    iterator erase(iterator position)
+    {
+        // Compute erasure index.
+        size_type posIndex = position - begin();
+
+        // Shift range [position + 1, end) towards the left by 1, overwriting
+        // the element at position.
+        _CopyBuffer(m_buffer + posIndex + 1,
+                    m_size - posIndex - 1,
+                    m_buffer + posIndex,
+                    m_size - posIndex - 1);
+
+        // Deconstruct last element.
+        m_buffer[m_size - 1].~value_type();
+
+        // Decrement size by 1.
+        m_size -= 1;
 
         return iterator(m_buffer + posIndex);
     }
