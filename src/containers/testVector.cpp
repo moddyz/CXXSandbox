@@ -598,6 +598,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_single_value",
     {
         typename TestType::iterator it =
             vec.insert(vec.begin(), std::string("Hi"));
+        CHECK(*it == typename TestType::value_type("Hi"));
+        CHECK(it - vec.begin() == 0);
+
         REQUIRE(vec.size() == 4);
         CHECK(vec[0] == typename TestType::value_type("Hi"));
         CHECK(vec[1] == typename TestType::value_type("Foo"));
@@ -608,6 +611,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_single_value",
     {
         typename TestType::iterator it =
             vec.insert(vec.begin() + 2, std::string("Hello"));
+        CHECK(*it == typename TestType::value_type("Hello"));
+        CHECK(it - vec.begin() == 2);
+
         REQUIRE(vec.size() == 5);
         CHECK(vec[0] == typename TestType::value_type("Hi"));
         CHECK(vec[1] == typename TestType::value_type("Foo"));
@@ -630,6 +636,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_multiple_values",
     {
         typename TestType::iterator it =
             vec.insert(vec.begin(), 3, std::string("Hi"));
+        CHECK(*it == typename TestType::value_type("Hi"));
+        CHECK(it - vec.begin() == 0);
+
         REQUIRE(vec.size() == 6);
         CHECK(vec[0] == typename TestType::value_type("Hi"));
         CHECK(vec[1] == typename TestType::value_type("Hi"));
@@ -642,6 +651,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_multiple_values",
     {
         typename TestType::iterator it =
             vec.insert(vec.begin() + 4, 2, std::string("Hello"));
+        CHECK(*it == typename TestType::value_type("Hello"));
+        CHECK(it - vec.begin() == 4);
+
         REQUIRE(vec.size() == 8);
         CHECK(vec[0] == typename TestType::value_type("Hi"));
         CHECK(vec[1] == typename TestType::value_type("Hi"));
@@ -667,6 +679,9 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_insert_initializer_list",
     typename TestType::iterator it = vec.insert(
         vec.begin() + 1,
         { std::string("One"), std::string("Two"), std::string("Three") });
+    CHECK(*it == typename TestType::value_type("One"));
+    CHECK(it - vec.begin() == 1);
+
     REQUIRE(vec.size() == 6);
     CHECK(vec[0] == typename TestType::value_type("Foo"));
     CHECK(vec[1] == typename TestType::value_type("One"));
@@ -686,7 +701,10 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_emplace",
     typename TestType::value_type element1 = vec.emplace_back(2, 2, 2);
     typename TestType::value_type element2 = vec.emplace_back(3, 3, 3);
 
-    vec.emplace(vec.begin() + 1, 5, 5, 5);
+    typename TestType::iterator it = vec.emplace(vec.begin() + 1, 5, 5, 5);
+    CHECK(*it == typename TestType::value_type(5, 5, 5));
+    CHECK(it - vec.begin() == 1);
+
     REQUIRE(vec.size() == 4);
     REQUIRE(vec[0] == typename TestType::value_type(1, 1, 1));
     REQUIRE(vec[1] == typename TestType::value_type(5, 5, 5));
