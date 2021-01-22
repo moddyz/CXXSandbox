@@ -739,3 +739,38 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_erase",
     CHECK(vec[0] == typename TestType::value_type("Foo"));
     CHECK(vec[1] == typename TestType::value_type("Baz"));
 }
+
+TEMPLATE_PRODUCT_TEST_CASE("Vector_erase_range",
+                           s_templateProduct,
+                           (std::vector, Vector),
+                           (std::string))
+{
+    TestType vec;
+    vec.push_back(std::string("Foo"));
+    vec.push_back(std::string("Bar"));
+    vec.push_back(std::string("Baz"));
+    vec.push_back(std::string("Qux"));
+    vec.push_back(std::string("Lux"));
+    vec.push_back(std::string("Zxy"));
+
+    {
+        typename TestType::iterator it = vec.erase(vec.begin() + 1, vec.begin() + 3);
+        CHECK(*it == typename TestType::value_type("Qux"));
+        CHECK(it - vec.begin() == 1);
+
+        CHECK(vec.size() == 4);
+        CHECK(vec[0] == typename TestType::value_type("Foo"));
+        CHECK(vec[1] == typename TestType::value_type("Qux"));
+        CHECK(vec[2] == typename TestType::value_type("Lux"));
+        CHECK(vec[3] == typename TestType::value_type("Zxy"));
+    }
+
+    {
+        typename TestType::iterator it = vec.erase(vec.begin() + 1, vec.end());
+        CHECK(it == vec.end());
+
+        CHECK(vec.size() == 1);
+        CHECK(vec[0] == typename TestType::value_type("Foo"));
+    }
+
+}

@@ -476,21 +476,33 @@ public:
     /// \return The position of the erased element.
     iterator erase(iterator position)
     {
+        return erase(position, position + 1);
+    }
+
+    /// Erase the range from \p first to \p last.
+    ///
+    /// \param first The first element in the range.
+    /// \param last The last element in the range.
+    ///
+    /// \return The position of the first erased element.
+    iterator erase(iterator first, iterator last)
+    {
         // Compute erasure index.
-        size_type posIndex = position - begin();
+        size_type posIndex = first - begin();
+        size_type rangeSize = last - first;
 
         // Shift range [position + 1, end) towards the left by 1, overwriting
         // the element at position.
-        _CopyBuffer(m_buffer + posIndex + 1,
-                    m_size - posIndex - 1,
+        _CopyBuffer(m_buffer + posIndex + rangeSize,
+                    m_size - posIndex - rangeSize,
                     m_buffer + posIndex,
-                    m_size - posIndex - 1);
+                    m_size - posIndex - rangeSize);
 
         // Deconstruct last element.
-        m_buffer[m_size - 1].~value_type();
+        m_buffer[m_size - rangeSize].~value_type();
 
         // Decrement size by 1.
-        m_size -= 1;
+        m_size -= rangeSize;
 
         return iterator(m_buffer + posIndex);
     }
