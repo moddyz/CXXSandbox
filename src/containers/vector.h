@@ -474,10 +474,7 @@ public:
     /// \param position The position of the element to erase.
     ///
     /// \return The position of the erased element.
-    iterator erase(iterator position)
-    {
-        return erase(position, position + 1);
-    }
+    iterator erase(iterator position) { return erase(position, position + 1); }
 
     /// Erase the range from \p first to \p last.
     ///

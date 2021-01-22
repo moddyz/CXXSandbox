@@ -754,7 +754,8 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_erase_range",
     vec.push_back(std::string("Zxy"));
 
     {
-        typename TestType::iterator it = vec.erase(vec.begin() + 1, vec.begin() + 3);
+        typename TestType::iterator it =
+            vec.erase(vec.begin() + 1, vec.begin() + 3);
         CHECK(*it == typename TestType::value_type("Qux"));
         CHECK(it - vec.begin() == 1);
 
@@ -772,5 +773,4 @@ TEMPLATE_PRODUCT_TEST_CASE("Vector_erase_range",
         CHECK(vec.size() == 1);
         CHECK(vec[0] == typename TestType::value_type("Foo"));
     }
-
 }
